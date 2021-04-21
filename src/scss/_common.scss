@@ -1,0 +1,116 @@
+@use 'vars';
+@use 'color';
+
+body {
+    background: color.$background;
+    color: color.$onBackground;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+header {
+    font-size: 1rem;
+    font-family: monospace;
+}
+
+header,
+h1 {
+    margin-bottom: 1.2rem;
+}
+
+section {
+    margin: 1rem 1rem 3rem 1rem;
+    padding: 0 1rem 1rem 1rem;
+    border: vars.$table-border;
+    border-radius: 0.5rem;
+}
+
+table {
+    background: color.$table;
+    color: color.$onTable;
+    border: vars.$table-border;
+    border-collapse: collapse;
+
+    th {
+        border-bottom: vars.$table-border;
+    }
+
+    th,
+    td {
+        padding: vars.$padding;
+        border-left: vars.$table-border;
+        border-right: vars.$table-border;
+    }
+
+    tr:hover {
+        background: color.$text-tertiary-invert;
+    }
+}
+
+td.numeric {
+    text-align: center;
+}
+
+a {
+    color: color.$accent;
+    text-decoration: none;
+}
+
+a:visited {
+    color: color.$accent-secondary;
+}
+
+.button {
+    background: color.$accent;
+    color: color.$onAccent !important;
+    padding: vars.$padding;
+    margin-right: 16px;
+    border-radius: vars.$corner-radius;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+}
+
+.busy {
+    background: color.$text-tertiary;
+    cursor: no-drop;
+}
+
+.action {
+    @extend .button;
+    background: color.$warn;
+}
+
+.list-item {
+    padding: 6px 4px;
+    background-color: color.$table;
+    transition: background-color 180ms ease;
+    display: flex;
+    align-items: center;
+}
+
+.list-item:hover {
+    background-color: adjust-color($color: color.$table, $lightness: -5%);
+}
+
+.list-scroll {
+    @extend .list;
+    overflow-y: scroll;
+    max-height: 15rem;
+}
+
+.list {
+    background: color.$table;
+}
+
+.item-content {
+    font-size: small;
+}
+
+.tag {
+    font-size: xx-small;
+    padding: 4px 8px;
+    background-color: color.$accent;
+    color: color.$onAccent;
+    border-radius: vars.$corner-radius;
+    margin: auto 8px;
+}

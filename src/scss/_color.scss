@@ -1,0 +1,38 @@
+$text-light: rgba(255, 255, 255, 0.83);
+$text-light-secondary: rgba(255, 255, 255, 0.54);
+$text-light-tertiary: rgba(255, 255, 255, 0.25);
+$text-dark: rgba(0, 0, 0, 0.83);
+$text-dark-secondary: rgba(0, 0, 0, 0.54);
+$text-dark-tertiary: rgba(0, 0, 0, 0.25);
+
+$text: $text-light;
+$text-secondary: $text-light-secondary;
+$text-tertiary: $text-light-tertiary;
+
+$text-invert: $text-dark;
+$text-secondary-invert: $text-dark-secondary;
+$text-tertiary-invert: $text-dark-tertiary;
+
+$accent: #3694c8;
+$accent-secondary: #60b4e377;
+$onAccent: $text;
+
+$selected: #aaaaaa88;
+
+$background: #111111;
+$onBackground: $text;
+// $tabletop: #070707;
+
+$surface: #222222;
+$surface-hover: #555555;
+$onSurface: $text-light;
+
+$table: #444444;
+$onTable: $text-light;
+$table-border: $text-light-tertiary;
+
+$code: #444444;
+$onCodet: $text-light;
+
+$warn: #f44336;
+$onWarn: $text-light;

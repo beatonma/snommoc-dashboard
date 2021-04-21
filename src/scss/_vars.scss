@@ -1,0 +1,17 @@
+@use 'color';
+
+// $primary: var(--text-primary);
+// $secondary: var(--text-secondary);
+// $tertiary: var(--text-tertiary);
+// $accent: var(--accent);
+// $onAccent: var(--text-light-primary);
+// $accent-secondary: var(--accent-secondary);
+// $background: var(--tabletop);
+// $onBackground: $primary;
+// $surface: var(--card);
+// $onSurface: $primary;
+// $table: var(--table-background);
+$font: 'Open Sans', sans-serif;
+$table-border: color.$table-border 1px solid;
+$corner-radius: 6px;
+$padding: $corner-radius ($corner-radius * 2);

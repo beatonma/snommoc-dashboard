@@ -1,0 +1,41 @@
+@use 'vars';
+@use 'color';
+@use 'common';
+
+$searchbar-width: 80%;
+
+.search-results {
+    @extend .list;
+    position: absolute;
+    width: $searchbar-width;
+}
+
+.search-form {
+    width: $searchbar-width;
+    margin: auto;
+    min-width: 20rem;
+    max-width: 90%;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 8px;
+}
+
+.action-close-search {
+    cursor: pointer;
+    padding: 16px;
+    margin-left: auto;
+    margin-right: 0;
+    width: fit-content;
+}
+
+a.search-result {
+    color: color.$text;
+}
+
+.list-item.search-result {
+    display: flex;
+    align-items: center;
+    background-color: color.$table;
+}
