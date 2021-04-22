@@ -1,5 +1,7 @@
 @use 'vars';
 @use 'color';
+@use 'tag';
+@use 'list';
 
 body {
     background: color.$background;
@@ -15,6 +17,10 @@ header {
 header,
 h1 {
     margin-bottom: 1.2rem;
+}
+
+span {
+    display: inline-block;
 }
 
 section {
@@ -80,37 +86,7 @@ a:visited {
     background: color.$warn;
 }
 
-.list-item {
-    padding: 6px 4px;
-    background-color: color.$table;
-    transition: background-color 180ms ease;
+.space-between {
     display: flex;
-    align-items: center;
-}
-
-.list-item:hover {
-    background-color: adjust-color($color: color.$table, $lightness: -5%);
-}
-
-.list-scroll {
-    @extend .list;
-    overflow-y: scroll;
-    max-height: 15rem;
-}
-
-.list {
-    background: color.$table;
-}
-
-.item-content {
-    font-size: small;
-}
-
-.tag {
-    font-size: xx-small;
-    padding: 4px 8px;
-    background-color: color.$accent;
-    color: color.$onAccent;
-    border-radius: vars.$corner-radius;
-    margin: auto 8px;
+    justify-content: space-between;
 }

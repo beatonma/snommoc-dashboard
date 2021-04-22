@@ -1,6 +1,6 @@
 import React from 'react';
-import Tag from './components/tag';
-import {DASHBOARD_URL} from './local/local.js';
+import { Tag, TaggedRow, TODO } from './components/tag';
+import { DASHBOARD_URL } from './local/local.js';
 
 /**
  * Sample response:
@@ -49,10 +49,11 @@ class UnlinkedConstituencies extends React.Component {
         return (
             <section>
                 <h1>Unlinked Constituencies</h1>
+                <TODO />
                 <div className="unlinked-constituencies list-scroll">
                     {
                         this.state.results.map((item) =>
-                            <UnlinkedConstituency name={item.name} url={item.name} mp={item.mp} election={item.election} />
+                            <UnlinkedConstituency key={item.name} name={item.name} url={item.url} mp={item.mp} election={item.election} />
                         )
                     }
                 </div>
@@ -64,11 +65,10 @@ class UnlinkedConstituencies extends React.Component {
 function UnlinkedConstituency(props) {
     return (
         <div className="unlinked-constituency list-item">
-            <a href={props.url}>
-                <span>{props.name}</span>
-            </a>
-            <a href={props.mp.url}><Tag content={props.mp.name} /></a>
-            <a href={props.election.url}><Tag content={props.election.name} /></a>
+            <TaggedRow content={<a href={props.url}>{props.name}</a>}>
+                <Tag><a href={props.mp.url}>{props.mp.name}</a></Tag>
+                <Tag><a href={props.election.url}>{props.election.name}</a></Tag>
+            </TaggedRow>
         </div>
     );
 }

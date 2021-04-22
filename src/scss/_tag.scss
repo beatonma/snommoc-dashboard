@@ -1,0 +1,31 @@
+@use 'color';
+@use 'vars';
+
+.tag {
+    display: inline-block;
+    font-size: xx-small;
+    padding: 4px 8px;
+    background-color: color.$accent;
+    color: color.$onAccent;
+    border-radius: vars.$corner-radius;
+    margin-right: 8px;
+    text-align: center;
+}
+
+.tag a, .tag a:visited {
+    color: color.$onAccent;
+}
+
+.tagged-row {
+    display: flex;
+    align-items: center;
+}
+
+.tag-group {
+    margin: 0 8px;
+}
+
+.tag.todo {
+    background-color: color.$warn;
+    font-weight: bolder;
+}

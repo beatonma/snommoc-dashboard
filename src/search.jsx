@@ -1,7 +1,11 @@
 import React from 'react';
 import './scss/search.scss';
-import {DASHBOARD_URL} from './local/local';
-import Tag from './components/tag';
+import { DASHBOARD_URL } from './local/local';
+import { Tag, TaggedRow } from './components/tag';
+import Symbol from './components/symbol';
+import { ListItem, ScrollableColumn } from './components/list';
+import { getCsrfToken } from './util/cookies';
+import { NoContent } from './components/empty';
 
 /**
  * Sample response:
@@ -25,6 +29,10 @@ class SearchForm extends React.Component {
             query: '',
             results: {},
             showResults: true,
+            toggleFeatured: (targetType, targetId, isFeatured) => {
+                props.toggleFeatured(targetType, targetId, isFeatured);
+                this.handleSubmit(this.state.query);
+            },
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -39,12 +47,17 @@ class SearchForm extends React.Component {
     }
 
     handleSubmit(query) {
+        if (query.length == 0) {
+            this.setResults({});
+            return;
+        }
+
         const url = `${DASHBOARD_URL}/search/${query}/`
         fetch(url)
             .then((response) => response.json())
-            .then((data) => {
-                this.setState({ results: data });
-            });
+            .then((data) =>
+                this.setResults(data)
+            );
     }
 
     onFocus() {
@@ -52,7 +65,15 @@ class SearchForm extends React.Component {
     }
 
     onBlur() {
-        this.setState({ showResults: false });
+        this.setState({
+            query: '',
+            results: {},
+        });
+        window.focus();
+    }
+
+    setResults(value) {
+        this.setState({ results: value });
     }
 
     render() {
@@ -63,18 +84,25 @@ class SearchForm extends React.Component {
 
         let searchResultsBlock;
         if (this.state.showResults) {
-            searchResultsBlock = <SearchResults results={this.state.results} />
+            searchResultsBlock = <SearchResults results={this.state.results} onToggleFeatured={this.state.toggleFeatured} />
         }
         else {
-            searchResultsBlock = <></>
+            searchResultsBlock = <NoContent />
         }
 
         return (
             <div>
                 <form onSubmit={onSubmit} className="search-form">
-                    <input className="search-bar" placeholder="Search" type="text" value={this.state.query} onChange={this.handleChange} onFocus={this.onFocus} onBlur={this.onBlur} />
+                    <div className="search-bar-wrapper">
+                        <span className="search-bar-span">
+                            <input className="search-bar" placeholder={`Search${Symbol.ellips}`}
+                                type="text" value={this.state.query} onChange={this.handleChange}
+                                onFocus={this.onFocus} />
+                        </span>
+                        <span className="action-close-search" onClick={this.onBlur}>{Symbol.close}</span>
+                    </div>
 
-                    { searchResultsBlock }
+                    {searchResultsBlock}
                 </form>
 
             </div>
@@ -87,34 +115,56 @@ function SearchResults(props) {
 
     if (Object.keys(results).length == 0) {
         return (
-            <div></div>
+            <NoContent className="search-results"/>
         );
     }
 
     return (
         <div className="search-results">
-            <div className="list-scroll">
+            <ScrollableColumn>
                 {
                     Object.keys(results).map((key) => {
                         const items = results[key];
 
-                        return items.map((item) =>
-                            <SearchResultItem type={key} name={item.name} url={item.url} id={item.id} />
-                        )
+                        return items.map((item) => {
+                            const toggleFeatured = (() => {
+                                props.onToggleFeatured(key, item.id, item.featured);
+                            });
+
+                            return (
+                                <SearchResultItem
+                                    key={item.id}
+                                    type={key} name={item.name} url={item.url} id={item.id} featured={item.featured}
+                                    onToggleFeatured={toggleFeatured} />
+                            );
+                        });
                     })
                 }
-            </div>
+            </ScrollableColumn>
         </div>
     );
 }
 
 function SearchResultItem(props) {
     return (
-        <a href={props.url} className="search-result">
-            <div className=" list-item search-result">
-                <span>{truncateString(props.name, 60)}</span><Tag content={`${props.type} ${props.id}`} />
-            </div>
-        </a>
+        <ListItem className="search-result">
+            <a href={props.url} className="search-result">
+                <TaggedRow content={truncateString(props.name, 60)} tags={[`${props.type} ${props.id}`]} />
+            </a>
+            <FeaturedIcon featured={props.featured} onClick={props.onToggleFeatured} />
+        </ListItem>
+    );
+}
+
+function FeaturedIcon(props) {
+    const featured = props.featured;
+    let icon;
+    if (featured === null) return <NoContent />;
+    else if (featured == false) icon = Symbol.unfeatured;
+    else icon = Symbol.featured;
+
+    return (
+        <div className="featured-icon" onClick={props.onClick}>{icon}</div>
     );
 }
 
@@ -122,7 +172,7 @@ function truncateString(str, num) {
     if (str.length <= num) {
         return str;
     }
-    return str.slice(0, num) + '\u2026';
+    return str.slice(0, num) + Symbol.ellips;
 }
 
 export default SearchForm

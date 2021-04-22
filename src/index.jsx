@@ -5,6 +5,8 @@ import './scss/dashboard.scss';
 import SearchForm from './search';
 import UnlinkedConstituencies from './unlinked-constituencies';
 import Zeitgeist from './zeitgeist';
+import { API_URL, DASHBOARD_URL } from './local/local';
+import { getCsrfToken } from './util/cookies';
 
 function app() {
     ReactDom.render(
@@ -13,14 +15,55 @@ function app() {
     );
 }
 
-function Dashboard(props) {
-    return (
-        <div>
-            <SearchForm />
-            <UnlinkedConstituencies />
-            <Zeitgeist />
-        </div>
-    );
+class Dashboard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            zeitgeist: {},
+        }
+
+        this.refreshZeitgeist = this.refreshZeitgeist.bind(this);
+        this.toggleFeatured = this.toggleFeatured.bind(this);
+
+        this.refreshZeitgeist();
+    }
+
+    refreshZeitgeist() {
+        const url = `${API_URL}/zeitgeist/`;
+        fetch(url)
+            .then((response) => response.json())
+            .then((results) => {
+                this.setState({ zeitgeist: results });
+            });
+    }
+
+    toggleFeatured(targetType, targetId, isFeatured) {
+        const endpoint = `featured-${targetType.toLowerCase()}`;
+        const url = `${DASHBOARD_URL}/actions/${endpoint}/${targetId}/`;
+
+        const requestType = isFeatured ? 'DELETE' : 'POST';
+
+        fetch(url, {
+            method: requestType,
+            headers: {
+                'Content-Type': 'x-www-form-urlencoded',
+                'X-CSRFToken': getCsrfToken(),
+            },
+        })
+            .then(response => {
+                this.refreshZeitgeist();
+            });
+    }
+
+    render() {
+        return (
+            <div>
+                <SearchForm toggleFeatured={this.toggleFeatured} />
+                <UnlinkedConstituencies />
+                <Zeitgeist zeitgeist={this.state.zeitgeist} />
+            </div>
+        );
+    }
 }
 
 app();

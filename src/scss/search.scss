@@ -8,18 +8,31 @@ $searchbar-width: 80%;
     @extend .list;
     position: absolute;
     width: $searchbar-width;
+    font-size: small;
 }
 
 .search-form {
     width: $searchbar-width;
     margin: auto;
-    min-width: 20rem;
-    max-width: 90%;
 }
 
-.search-bar {
+.search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: white;
     width: 100%;
-    padding: 8px;
+    border-radius: vars.$corner-radius;
+}
+
+.search-bar-span {
+    width: calc(100% - 64px);
+}
+
+.search-bar, .search-bar:focus {
+    width: 100%;
+    padding: 8px 16px;
+    border: none;
+    outline: none;
 }
 
 .action-close-search {
@@ -28,14 +41,20 @@ $searchbar-width: 80%;
     margin-left: auto;
     margin-right: 0;
     width: fit-content;
+    color: color.$text-dark;
 }
 
 a.search-result {
     color: color.$text;
+    width: calc(100% - 64px);
 }
 
 .list-item.search-result {
-    display: flex;
-    align-items: center;
-    background-color: color.$table;
+    @extend .space-between;
+}
+
+.featured-icon {
+    color: color.$accent;
+    padding: 8px;
+    cursor: pointer;
 }

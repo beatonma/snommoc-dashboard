@@ -1,0 +1,28 @@
+@use 'color';
+
+
+.list {
+    background: color.$table;
+}
+
+.list-scroll {
+    @extend .list;
+    overflow-y: scroll;
+    max-height: 15rem;
+}
+
+.list-item {
+    padding: 6px 4px;
+    background-color: color.$table;
+    transition: background-color 180ms ease;
+    display: flex;
+    align-items: center;
+}
+
+.list-item:hover {
+    background-color: adjust-color($color: color.$table, $lightness: -5%);
+}
+
+.item-content {
+    font-size: small;
+}

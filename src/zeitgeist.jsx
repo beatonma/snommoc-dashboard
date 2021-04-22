@@ -1,5 +1,5 @@
 import React from 'react';
-import {API_URL} from './local/local';
+import { ListItem, ScrollableColumn } from './components/list';
 
 /**
  * {
@@ -55,42 +55,23 @@ import {API_URL} from './local/local';
  * }
  *  */
 
-class Zeitgeist extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            zeitgeist: {},
-        };
 
-        this.update = this.update.bind(this);
-        this.update();
+function Zeitgeist(props) {
+    const zeitgeist = props.zeitgeist;
+    if (Object.keys(zeitgeist).length == 0) {
+        return <></>;
     }
 
-    update() {
-        const url = `${API_URL}/zeitgeist/`;
-        fetch(url)
-            .then((response) => response.json())
-            .then((results) => {
-                this.setState({ zeitgeist: results });
-            });
-    }
-
-    render() {
-        if (Object.keys(this.state.zeitgeist).length == 0) {
-            return <></>;
-        }
-
-        return (
-            <section>
-                <h1>Zeitgeist</h1>
-                <div class='zeitgeist'>
-                    <FeaturedPeople people={this.state.zeitgeist.people}/>
-                    <FeaturedBills bills={this.state.zeitgeist.bills}/>
-                    <FeaturedDivisions divisions={this.state.zeitgeist.divisions}/>
-                </div>
-            </section>
-        );
-    }
+    return (
+        <section>
+            <h1>Zeitgeist</h1>
+            <div className='zeitgeist'>
+                <FeaturedPeople people={zeitgeist.people} />
+                <FeaturedBills bills={zeitgeist.bills} />
+                <FeaturedDivisions divisions={zeitgeist.divisions} />
+            </div>
+        </section>
+    );
 }
 
 function FeaturedPeople(props) {
@@ -99,15 +80,15 @@ function FeaturedPeople(props) {
     return (
         <div>
             <h3>People</h3>
-            <div className="list-scroll">
+            <ScrollableColumn>
                 {
-                    people.map(person => 
-                        <div className="list-item">
+                    people.map(person =>
+                        <ListItem key={person.name}>
                             {person.name}
-                        </div>
+                        </ListItem>
                     )
                 }
-            </div>
+            </ScrollableColumn>
         </div>
     );
 }
@@ -118,16 +99,16 @@ function FeaturedBills(props) {
     return (
         <div>
             <h3>Bills</h3>
-            <div className="list-scroll">
+            <ScrollableColumn>
                 {
-                    bills.map(bill => 
-                        <div className="list-item">
+                    bills.map(bill =>
+                        <ListItem key={bill.parliamentdotuk}>
                             {bill.title}
-                        </div>
+                        </ListItem>
                     )
                 }
-            </div>
-        </div>
+            </ScrollableColumn >
+        </div >
     );
 }
 
@@ -137,15 +118,16 @@ function FeaturedDivisions(props) {
     return (
         <div>
             <h3>Divisions</h3>
-            <div className="list-scroll">
+            <ScrollableColumn>
                 {
-                    divisions.map(division => 
-                        <div className="list-item">
+                    divisions.map(division =>
+                        <ListItem key={division.parliamentdotuk}>
                             {division.title}
-                        </div>
+                        </ListItem>
                     )
                 }
-            </div>
+
+            </ScrollableColumn>
         </div>
     );
 }

@@ -1,3 +1,4 @@
 *-lock.json*
 local/
 node_modules/
+*.gitbundle
