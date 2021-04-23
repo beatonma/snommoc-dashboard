@@ -5,7 +5,7 @@ import './scss/dashboard.scss';
 import SearchForm from './search';
 import UnlinkedConstituencies from './unlinked-constituencies';
 import Zeitgeist from './zeitgeist';
-import { API_URL, DASHBOARD_URL } from './local/local';
+import { apiUrl, dashboardUrl } from './local/local';
 import { getCsrfToken } from './util/cookies';
 
 function app() {
@@ -29,7 +29,7 @@ class Dashboard extends React.Component {
     }
 
     refreshZeitgeist() {
-        const url = `${API_URL}/zeitgeist/`;
+        const url = apiUrl('zeitgeist/');
         fetch(url)
             .then((response) => response.json())
             .then((results) => {
@@ -39,7 +39,7 @@ class Dashboard extends React.Component {
 
     toggleFeatured(targetType, targetId, isFeatured) {
         const endpoint = `featured-${targetType.toLowerCase()}`;
-        const url = `${DASHBOARD_URL}/actions/${endpoint}/${targetId}/`;
+        const url = dashboardUrl(`actions/${endpoint}/${targetId}/`);
 
         const requestType = isFeatured ? 'DELETE' : 'POST';
 

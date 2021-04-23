@@ -1,11 +1,10 @@
 import React from 'react';
 import './scss/search.scss';
-import { DASHBOARD_URL } from './local/local';
-import { Tag, TaggedRow } from './components/tag';
+import { TaggedRow } from './components/tag';
 import Symbol from './components/symbol';
 import { ListItem, ScrollableColumn } from './components/list';
-import { getCsrfToken } from './util/cookies';
 import { NoContent } from './components/empty';
+import { dashboardUrl } from './local/local';
 
 /**
  * Sample response:
@@ -52,7 +51,7 @@ class SearchForm extends React.Component {
             return;
         }
 
-        const url = `${DASHBOARD_URL}/search/${query}/`
+        const url = dashboardUrl(`search/${query}/`);
         fetch(url)
             .then((response) => response.json())
             .then((data) =>
@@ -115,7 +114,7 @@ function SearchResults(props) {
 
     if (Object.keys(results).length == 0) {
         return (
-            <NoContent className="search-results"/>
+            <NoContent className="search-results" />
         );
     }
 
@@ -156,6 +155,10 @@ function SearchResultItem(props) {
     );
 }
 
+/**
+ * An icon which displays 'featured' status. If the item is not featurable, no icon will be displayed.
+ * Click to toggle.
+ */
 function FeaturedIcon(props) {
     const featured = props.featured;
     let icon;

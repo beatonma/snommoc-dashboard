@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tag, TaggedRow, TODO } from './components/tag';
-import { DASHBOARD_URL } from './local/local.js';
+import { dashboardUrl } from './local/local.js';
 
 /**
  * Sample response:
@@ -36,7 +36,7 @@ class UnlinkedConstituencies extends React.Component {
     }
 
     update() {
-        const url = `${DASHBOARD_URL}/unlinked-constituencies/`;
+        const url = dashboardUrl('unlinked-constituencies/');
         fetch(url)
             .then((response) => response.json())
             .then((json) => json.results)
