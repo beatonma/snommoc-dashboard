@@ -18,7 +18,7 @@ function TaggedRow(props) {
         childContent = props.children;
     }
     else {
-        childContent = props.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)
+        childContent = props.tags.map(tag => <Tag key={tag}>{tag}</Tag>)
     }
 
     return (

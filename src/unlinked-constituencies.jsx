@@ -38,9 +38,9 @@ class UnlinkedConstituencies extends React.Component {
     update() {
         const url = dashboardUrl('unlinked-constituencies/');
         fetch(url)
-            .then((response) => response.json())
-            .then((json) => json.results)
-            .then((results) => {
+            .then(response => response.json())
+            .then(json => json.results)
+            .then(results => {
                 this.setState({ results: results });
             });
     }
@@ -52,7 +52,7 @@ class UnlinkedConstituencies extends React.Component {
                 <TODO />
                 <div className="unlinked-constituencies list-scroll">
                     {
-                        this.state.results.map((item) =>
+                        this.state.results.map(item =>
                             <UnlinkedConstituency key={item.name} name={item.name} url={item.url} mp={item.mp} election={item.election} />
                         )
                     }

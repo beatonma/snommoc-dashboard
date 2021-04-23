@@ -53,8 +53,8 @@ class SearchForm extends React.Component {
 
         const url = dashboardUrl(`search/${query}/`);
         fetch(url)
-            .then((response) => response.json())
-            .then((data) =>
+            .then(response => response.json())
+            .then(data =>
                 this.setResults(data)
             );
     }
@@ -122,10 +122,10 @@ function SearchResults(props) {
         <div className="search-results">
             <ScrollableColumn>
                 {
-                    Object.keys(results).map((key) => {
+                    Object.keys(results).map(key => {
                         const items = results[key];
 
-                        return items.map((item) => {
+                        return items.map(item => {
                             const toggleFeatured = (() => {
                                 props.onToggleFeatured(key, item.id, item.featured);
                             });

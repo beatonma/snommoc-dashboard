@@ -9,10 +9,6 @@ module.exports = {
             import: './src/scss/dashboard.scss',
             filename: '../css/[name].css',
         },
-        'colors-dark': {
-            import: './src/scss/colors-dark.scss',
-            filename: '../css/[name].css'
-        }
     },
     output: {
         path: path.resolve(__dirname, '../static/dashboard/js/'),

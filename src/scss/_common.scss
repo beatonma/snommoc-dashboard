@@ -48,7 +48,7 @@ table {
     }
 
     tr:hover {
-        background: color.$text-tertiary-invert;
+        background: color.$text-invert-tertiary;
     }
 }
 
@@ -89,4 +89,5 @@ a:visited {
 .space-between {
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }

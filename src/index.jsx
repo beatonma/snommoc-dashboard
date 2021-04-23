@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import './scss/colors-dark.scss';
 import './scss/dashboard.scss';
 import SearchForm from './search';
 import UnlinkedConstituencies from './unlinked-constituencies';
 import Zeitgeist from './zeitgeist';
 import { apiUrl, dashboardUrl } from './local/local';
 import { getCsrfToken } from './util/cookies';
+import RecentTasks from './tasks';
 
 function app() {
     ReactDom.render(
@@ -31,10 +31,10 @@ class Dashboard extends React.Component {
     refreshZeitgeist() {
         const url = apiUrl('zeitgeist/');
         fetch(url)
-            .then((response) => response.json())
-            .then((results) => {
-                this.setState({ zeitgeist: results });
-            });
+            .then(response => response.json())
+            .then(results => 
+                this.setState({ zeitgeist: results })
+            );
     }
 
     toggleFeatured(targetType, targetId, isFeatured) {
@@ -42,17 +42,16 @@ class Dashboard extends React.Component {
         const url = dashboardUrl(`actions/${endpoint}/${targetId}/`);
 
         const requestType = isFeatured ? 'DELETE' : 'POST';
-
-        fetch(url, {
+        const config = {
             method: requestType,
             headers: {
                 'Content-Type': 'x-www-form-urlencoded',
                 'X-CSRFToken': getCsrfToken(),
             },
-        })
-            .then(response => {
-                this.refreshZeitgeist();
-            });
+        };
+
+        fetch(url, config)
+            .then(response => this.refreshZeitgeist());
     }
 
     render() {
@@ -60,6 +59,7 @@ class Dashboard extends React.Component {
             <div>
                 <SearchForm toggleFeatured={this.toggleFeatured} />
                 <UnlinkedConstituencies />
+                <RecentTasks />
                 <Zeitgeist zeitgeist={this.state.zeitgeist} />
             </div>
         );

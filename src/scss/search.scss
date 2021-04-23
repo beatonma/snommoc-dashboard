@@ -44,7 +44,7 @@ $searchbar-width: 80%;
     color: color.$text-dark;
 }
 
-a.search-result {
+a.search-result, a:visited.search-result {
     color: color.$text;
     width: calc(100% - 64px);
 }

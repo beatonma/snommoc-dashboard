@@ -1,0 +1,41 @@
+@use 'color';
+@use 'common';
+
+$complete: #36f443;
+$ongoing: #ebd404;
+
+.task-content {
+    @extend .item-content;
+}
+
+.task-time {
+    text-align: end;
+    font-size: smaller;
+}
+
+.failed {
+    background-color: color.$warn;
+    color: color.$onWarn;
+    font-weight: bolder;
+}
+
+.failed:hover {
+    background-color: change-color($color: color.$warn, $saturation: 50%, $lightness: 30%);
+}
+
+.complete .status {
+    color: $complete;
+}
+
+.ongoing {
+    background-color: $ongoing;
+    color: color.$text-dark;
+}
+
+.status {
+    padding-right: 8px;
+}
+
+code {
+    background: color.$text-invert-tertiary;
+}

@@ -10,8 +10,8 @@ $text-secondary: $text-light-secondary;
 $text-tertiary: $text-light-tertiary;
 
 $text-invert: $text-dark;
-$text-secondary-invert: $text-dark-secondary;
-$text-tertiary-invert: $text-dark-tertiary;
+$text-invert-secondary: $text-dark-secondary;
+$text-invert-tertiary: $text-dark-tertiary;
 
 $accent: #3694c8;
 $accent-secondary: #60b4e377;
@@ -21,7 +21,6 @@ $selected: #aaaaaa88;
 
 $background: #111111;
 $onBackground: $text;
-// $tabletop: #070707;
 
 $surface: #222222;
 $surface-hover: #555555;
