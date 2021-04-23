@@ -1,10 +1,11 @@
 import React from 'react';
-import './scss/search.scss';
-import { TaggedRow } from './components/tag';
 import Symbol from './components/symbol';
-import { ListItem, ScrollableColumn } from './components/list';
+import { TaggedRow } from './components/tag';
+import { ScrollableColumn } from './components/list';
 import { NoContent } from './components/empty';
 import { dashboardUrl } from './local/local';
+import { FeaturedItem } from './components/featured';
+import './scss/search.scss';
 
 /**
  * Sample response:
@@ -126,9 +127,9 @@ function SearchResults(props) {
                         const items = results[key];
 
                         return items.map(item => {
-                            const toggleFeatured = (() => {
-                                props.onToggleFeatured(key, item.id, item.featured);
-                            });
+                            const toggleFeatured = (() =>
+                                props.onToggleFeatured(key, item.id, item.featured)
+                            );
 
                             return (
                                 <SearchResultItem
@@ -146,28 +147,11 @@ function SearchResults(props) {
 
 function SearchResultItem(props) {
     return (
-        <ListItem className="search-result">
-            <a href={props.url} className="search-result">
+        <FeaturedItem className='search-result' featured={props.featured} onClick={props.onToggleFeatured}>
+            <a href={props.url}>
                 <TaggedRow content={truncateString(props.name, 60)} tags={[`${props.type} ${props.id}`]} />
             </a>
-            <FeaturedIcon featured={props.featured} onClick={props.onToggleFeatured} />
-        </ListItem>
-    );
-}
-
-/**
- * An icon which displays 'featured' status. If the item is not featurable, no icon will be displayed.
- * Click to toggle.
- */
-function FeaturedIcon(props) {
-    const featured = props.featured;
-    let icon;
-    if (featured === null) return <NoContent />;
-    else if (featured == false) icon = Symbol.unfeatured;
-    else icon = Symbol.featured;
-
-    return (
-        <div className="featured-icon" onClick={props.onClick}>{icon}</div>
+        </FeaturedItem>
     );
 }
 

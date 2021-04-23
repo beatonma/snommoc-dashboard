@@ -44,17 +44,7 @@ $searchbar-width: 80%;
     color: color.$text-dark;
 }
 
-a.search-result, a:visited.search-result {
+.search-result a, .search-results a:visited {
     color: color.$text;
     width: calc(100% - 64px);
-}
-
-.list-item.search-result {
-    @extend .space-between;
-}
-
-.featured-icon {
-    color: color.$accent;
-    padding: 8px;
-    cursor: pointer;
 }

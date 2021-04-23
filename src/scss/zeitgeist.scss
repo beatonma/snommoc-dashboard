@@ -1,0 +1,13 @@
+@use 'common';
+
+.featured-item {
+    @extend .space-between;
+}
+
+.featured-title {
+    max-width: calc(100% - 64px);
+}
+
+.featured-item .icon {
+    
+}

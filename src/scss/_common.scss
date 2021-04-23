@@ -89,5 +89,6 @@ a:visited {
 .space-between {
     display: flex;
     justify-content: space-between;
-    width: 100%;
+    width: -webkit-fill-available;
+    overflow-x: hidden;
 }

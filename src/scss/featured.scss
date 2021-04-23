@@ -1,0 +1,11 @@
+@use 'color';
+
+.featured-content {
+    max-width: calc(100% - 64px);
+}
+
+.featured-icon {
+    color: color.$accent;
+    padding: 8px;
+    cursor: pointer;
+}

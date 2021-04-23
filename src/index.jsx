@@ -60,7 +60,7 @@ class Dashboard extends React.Component {
                 <SearchForm toggleFeatured={this.toggleFeatured} />
                 <UnlinkedConstituencies />
                 <RecentTasks />
-                <Zeitgeist zeitgeist={this.state.zeitgeist} />
+                <Zeitgeist zeitgeist={this.state.zeitgeist} toggleFeatured={this.toggleFeatured} />
             </div>
         );
     }

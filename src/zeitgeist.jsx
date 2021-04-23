@@ -1,5 +1,8 @@
 import React from 'react';
+import { NoContent } from './components/empty';
+import { FeaturedItem } from './components/featured';
 import { ListItem, ScrollableColumn } from './components/list';
+import './scss/zeitgeist.scss';
 
 /**
  * {
@@ -59,16 +62,16 @@ import { ListItem, ScrollableColumn } from './components/list';
 function Zeitgeist(props) {
     const zeitgeist = props.zeitgeist;
     if (Object.keys(zeitgeist).length == 0) {
-        return <></>;
+        return <NoContent />;
     }
 
     return (
         <section>
             <h1>Zeitgeist</h1>
             <div className='zeitgeist'>
-                <FeaturedPeople people={zeitgeist.people} />
-                <FeaturedBills bills={zeitgeist.bills} />
-                <FeaturedDivisions divisions={zeitgeist.divisions} />
+                <FeaturedPeople people={zeitgeist.people} toggleFeatured={props.toggleFeatured} />
+                <FeaturedBills bills={zeitgeist.bills} toggleFeatured={props.toggleFeatured} />
+                <FeaturedDivisions divisions={zeitgeist.divisions} toggleFeatured={props.toggleFeatured} />
             </div>
         </section>
     );
@@ -82,11 +85,15 @@ function FeaturedPeople(props) {
             <h3>People</h3>
             <ScrollableColumn>
                 {
-                    people.map(person =>
-                        <ListItem key={person.name}>
-                            {person.name}
-                        </ListItem>
-                    )
+                    people.map(person => {
+                        const toggleFeatured = () => props.toggleFeatured('person', person.parliamentdotuk, true);
+
+                        return (
+                            <FeaturedItem key={person.name} featured={true} onClick={toggleFeatured}>
+                                {person.name}
+                            </FeaturedItem>
+                        );
+                    })
                 }
             </ScrollableColumn>
         </div>
@@ -101,11 +108,15 @@ function FeaturedBills(props) {
             <h3>Bills</h3>
             <ScrollableColumn>
                 {
-                    bills.map(bill =>
-                        <ListItem key={bill.parliamentdotuk}>
-                            {bill.title}
-                        </ListItem>
-                    )
+                    bills.map(bill => {
+                        const toggleFeatured = () => props.toggleFeatured('bill', bill.parliamentdotuk, true);
+
+                        return (
+                            <FeaturedItem key={bill.parliamentdotuk} featured={true} onClick={toggleFeatured}>
+                                {bill.title}
+                            </FeaturedItem>
+                        );
+                    })
                 }
             </ScrollableColumn >
         </div >
@@ -120,11 +131,18 @@ function FeaturedDivisions(props) {
             <h3>Divisions</h3>
             <ScrollableColumn>
                 {
-                    divisions.map(division =>
-                        <ListItem key={division.parliamentdotuk}>
-                            {division.title}
-                        </ListItem>
-                    )
+                    divisions.map(division => {
+                        const toggleFeatured = () => {
+                            const type = division.house.toLowerCase() == 'commons' ? 'commonsdivision' : 'lordsdivision';
+                            return props.toggleFeatured(type, division.parliamentdotuk, true);
+                        };
+
+                        return (
+                            <FeaturedItem key={division.parliamentdotuk} featured={true} onClick={toggleFeatured}>
+                                {division.title}
+                            </FeaturedItem>
+                        );
+                    })
                 }
 
             </ScrollableColumn>
