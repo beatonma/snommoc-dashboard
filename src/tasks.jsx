@@ -1,4 +1,5 @@
 import React from 'react';
+import DateTime from './components/datetime';
 import { NoContent } from './components/empty';
 import { ListItem, ScrollableColumn } from "./components/list";
 import Symbol from "./components/symbol";
@@ -106,41 +107,6 @@ function Duration(props) {
     return (
         <div className='task-duration'>~{text}</div>
     );
-}
-
-function DateTime(props) {
-    let dateText = '';
-
-    const now = new Date();
-
-    const datetime = new Date(props.datetime);
-    if (now - datetime < 3_600_000 * 48) { // Dates are within 48 hours of each other.
-        let [, nowDate,] = now.toLocaleDateString("en-US").split("/").map(it => parseInt(it));
-        let [, date,] = datetime.toLocaleDateString("en-US").split("/").map(it => parseInt(it));
-
-        if (nowDate == date) {
-            dateText = 'Today'
-        }
-        else {
-            now.setDate(now.getDate() - 1);
-            if (now.getDate() == date) {
-                dateText = 'Yesterday';
-            }
-        }
-    }
-    if (dateText == '') {
-        dateText = datetime.toLocaleDateString();
-    }
-
-    const timeText = datetime.toLocaleTimeString().split(' ')[0];
-
-    return (
-        <div>
-            <time title={props.title} dateTime={props.datetime}>
-                {`${dateText} ${timeText}`}
-            </time>
-        </div>
-    )
 }
 
 function StatusIcon(props) {
