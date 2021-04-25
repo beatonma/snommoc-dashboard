@@ -1,8 +1,11 @@
 import React from 'react';
+import { extendedClassname } from '../util/elements';
 
 function Tag(props) {
     return (
-        <span className={`tag ${props.className || ''}`}>{props.children}</span>
+        <span className={extendedClassname('tag', props)} >
+            {props.children}
+        </span>
     );
 }
 
@@ -22,7 +25,7 @@ function TaggedRow(props) {
     }
 
     return (
-        <div className={`tagged-row ${props.className || ''}`}>
+        <div className={extendedClassname('tagged-row', props)}>
             <span>{props.content}</span>
             <span className="tag-group">
                 {childContent}

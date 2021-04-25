@@ -1,4 +1,5 @@
 import React from 'react';
+import { extendedClassname } from '../util/elements';
 
 const Symbol = {
     ellips: '\u2026', // &hellip;
@@ -17,7 +18,7 @@ const Icon = {
 function MaterialIcon(props) {
     return (
         <span
-            className={`material-icons ${props.className || ''}`}
+            className={extendedClassname('material-icons', props)}
             onClick={props.onClick}
             title={props.title}
         >

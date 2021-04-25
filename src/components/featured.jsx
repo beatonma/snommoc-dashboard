@@ -3,12 +3,15 @@ import { Icon, MaterialIcon } from "./symbol";
 import { NoContent } from "./empty";
 import { ListItem } from './list';
 import './../scss/featured.scss';
+import { extendedClassname } from '../util/elements';
 
 function FeaturedItem(props) {
     const icons = <Icons social={props.social} featured={props.featured} onFeaturedClick={props.onClick} />
 
     return (
-        <ListItem className={`space-between ${props.className || ''}`} icons={icons}>
+        <ListItem
+            className={extendedClassname('space-between', props)}
+            icons={icons}>
             <div className='featured-content'>
                 {props.children}
             </div>

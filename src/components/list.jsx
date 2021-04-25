@@ -4,7 +4,7 @@ import { NoContent } from './empty';
 
 function ScrollableColumn(props) {
     return (
-        <div className={`list-scroll ${props.className || ''}`}>
+        <div className={extendedClassname('list-scroll', props)}>
             {props.children}
         </div>
     );
@@ -21,7 +21,7 @@ function ListItem(props) {
 
     return (
         <div
-            className={`list-item ${props.className || ''}`}
+            className={extendedClassname('list-item', props)}
             onClick={props.onClick}
         >
             {content}
