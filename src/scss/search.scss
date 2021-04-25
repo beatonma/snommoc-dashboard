@@ -1,6 +1,8 @@
 @use 'vars';
 @use 'color';
 @use 'common';
+@use 'icons';
+@use 'list';
 
 $searchbar-width: 80%;
 
@@ -25,7 +27,7 @@ $searchbar-width: 80%;
 }
 
 .search-bar-span {
-    width: calc(100% - 64px);
+    @include icons.content-trailing-icon;
 }
 
 .search-bar, .search-bar:focus {
@@ -45,6 +47,6 @@ $searchbar-width: 80%;
 }
 
 .search-result a, .search-results a:visited {
+    @include icons.content-trailing-icon;
     color: color.$text;
-    width: calc(100% - 64px);
 }

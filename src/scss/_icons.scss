@@ -1,0 +1,7 @@
+@mixin content-trailing-icon {
+    width: calc(100% - 128px);
+}
+
+.trailing-icon {
+    padding: 8px;
+}

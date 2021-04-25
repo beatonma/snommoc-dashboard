@@ -1,11 +1,12 @@
 @use 'color';
+@use 'icons';
 
 .featured-content {
-    max-width: calc(100% - 64px);
+    @include icons.content-trailing-icon;
 }
 
 .featured-icon {
+    @extend .trailing-icon;
     color: color.$accent;
-    padding: 8px;
     cursor: pointer;
 }

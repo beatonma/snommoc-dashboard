@@ -1,0 +1,28 @@
+@use 'color';
+@use 'vars';
+
+table {
+    background: color.$table;
+    color: color.$onTable;
+    border: vars.$table-border;
+    border-collapse: collapse;
+
+    th {
+        border-bottom: vars.$table-border;
+    }
+
+    th,
+    td {
+        padding: vars.$padding;
+        border-left: vars.$table-border;
+        border-right: vars.$table-border;
+    }
+
+    tr:hover {
+        background: color.$text-invert-tertiary;
+    }
+}
+
+td.numeric {
+    text-align: center;
+}

@@ -30,32 +30,6 @@ section {
     border-radius: 0.5rem;
 }
 
-table {
-    background: color.$table;
-    color: color.$onTable;
-    border: vars.$table-border;
-    border-collapse: collapse;
-
-    th {
-        border-bottom: vars.$table-border;
-    }
-
-    th,
-    td {
-        padding: vars.$padding;
-        border-left: vars.$table-border;
-        border-right: vars.$table-border;
-    }
-
-    tr:hover {
-        background: color.$text-invert-tertiary;
-    }
-}
-
-td.numeric {
-    text-align: center;
-}
-
 a {
     color: color.$accent;
     text-decoration: none;
@@ -65,30 +39,13 @@ a:visited {
     color: color.$accent-secondary;
 }
 
-.button {
-    background: color.$accent;
-    color: color.$onAccent !important;
-    padding: vars.$padding;
-    margin-right: 16px;
-    border-radius: vars.$corner-radius;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 16px;
-}
-
-.busy {
-    background: color.$text-tertiary;
-    cursor: no-drop;
-}
-
-.action {
-    @extend .button;
-    background: color.$warn;
+.row {
+    display: flex;
+    flex-direction: row;
 }
 
 .space-between {
-    display: flex;
+    @extend .row;
     justify-content: space-between;
     width: -webkit-fill-available;
-    overflow-x: hidden;
 }

@@ -1,6 +1,5 @@
 @use 'color';
 
-
 .list {
     background: color.$table;
 }
@@ -26,4 +25,8 @@
 
 .item-content {
     font-size: small;
+}
+
+a .list-item, a:hover .list-item {
+    color: color.$text;
 }
