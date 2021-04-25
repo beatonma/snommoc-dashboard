@@ -1,8 +1,8 @@
 import React from 'react';
 import { NoContent } from './components/empty';
 import { FeaturedItem } from './components/featured';
-import { ListItem, ScrollableColumn } from './components/list';
-import './scss/zeitgeist.scss';
+import { ItemTitle, ItemContent, ListItem, ScrollableColumn } from './components/list';
+import { TaggedRow } from './components/tag';
 
 /**
  * {
@@ -56,7 +56,9 @@ import './scss/zeitgeist.scss';
  *       },
  *   ]
  * }
- *  */
+ * 
+ */
+
 
 
 function Zeitgeist(props) {
@@ -69,6 +71,7 @@ function Zeitgeist(props) {
         <section>
             <h1>Zeitgeist</h1>
             <div className='zeitgeist'>
+                <Motd motd={zeitgeist.motd} />
                 <FeaturedPeople people={zeitgeist.people} toggleFeatured={props.toggleFeatured} />
                 <FeaturedBills bills={zeitgeist.bills} toggleFeatured={props.toggleFeatured} />
                 <FeaturedDivisions divisions={zeitgeist.divisions} toggleFeatured={props.toggleFeatured} />
@@ -77,77 +80,102 @@ function Zeitgeist(props) {
     );
 }
 
-function FeaturedPeople(props) {
-    const people = props.people.map(item => item.target);
-
+function Section(props) {
     return (
         <div>
-            <h3>People</h3>
+            <h3>{props.title}</h3>
             <ScrollableColumn>
-                {
-                    people.map(person => {
-                        const toggleFeatured = () => props.toggleFeatured('person', person.parliamentdotuk, true);
-
-                        return (
-                            <FeaturedItem key={person.name} featured={true} onClick={toggleFeatured}>
-                                {person.name}
-                            </FeaturedItem>
-                        );
-                    })
-                }
+                {props.children}
             </ScrollableColumn>
         </div>
+    );
+}
+
+function Motd(props) {
+    return <Section title='MOTD'>
+        {
+            props.motd.map(
+                motd => {
+                    const content = <div>
+                        <ItemTitle>{motd.title}</ItemTitle>
+                        <ItemContent>{motd.description}</ItemContent>
+                    </div>
+
+                    return (
+                        <a key={motd.action_url} href={motd.action_url} title={motd.action_url}>
+                            <ListItem>
+                                <TaggedRow content={content}
+                                    tags={[motd.action_url]} />
+                            </ListItem>
+                        </a>
+                    )
+                }
+            )
+        }
+    </Section>
+}
+
+function ZeitgeistSection(props) {
+    return (
+        <Section title={props.title}>
+            {
+                props.items.map(zeitgeistItem => {
+                    const item = zeitgeistItem.target;
+                    const featured = isFeatured(zeitgeistItem);
+                    const type = props.typeOf?.(item) || props.type;
+
+                    const toggleFeatured = () => props.toggleFeatured(type, item.parliamentdotuk, featured);
+
+                    return (
+                        <FeaturedItem key={item.parliamentdotuk}
+                            social={isTrending(zeitgeistItem)}
+                            featured={featured}
+                            onClick={toggleFeatured}
+                        >
+                            {item.title || item.name}
+                        </FeaturedItem>
+                    )
+                })
+            }
+        </Section>
+    );
+}
+
+function FeaturedPeople(props) {
+    return (
+        <ZeitgeistSection
+            title='People'
+            type='person'
+            items={props.people}
+            toggleFeatured={props.toggleFeatured}
+        />
     );
 }
 
 function FeaturedBills(props) {
-    const bills = props.bills.map(item => item.target);
-
-    return (
-        <div>
-            <h3>Bills</h3>
-            <ScrollableColumn>
-                {
-                    bills.map(bill => {
-                        const toggleFeatured = () => props.toggleFeatured('bill', bill.parliamentdotuk, true);
-
-                        return (
-                            <FeaturedItem key={bill.parliamentdotuk} featured={true} onClick={toggleFeatured}>
-                                {bill.title}
-                            </FeaturedItem>
-                        );
-                    })
-                }
-            </ScrollableColumn >
-        </div >
-    );
+    return <ZeitgeistSection
+        title='Bills'
+        type='bill'
+        items={props.bills}
+        toggleFeatured={props.toggleFeatured}
+    />
 }
 
 function FeaturedDivisions(props) {
-    const divisions = props.divisions.map(item => item.target);
+    return <ZeitgeistSection
+        title='Divisions'
+        typeOf={division => division.house.toLowerCase() == 'commons' ? 'commonsdivision' : 'lordsdivision'}
+        items={props.divisions}
+        toggleFeatured={props.toggleFeatured}
+    />
+}
 
-    return (
-        <div>
-            <h3>Divisions</h3>
-            <ScrollableColumn>
-                {
-                    divisions.map(division => {
-                        const toggleFeatured = () => {
-                            const type = division.house.toLowerCase() == 'commons' ? 'commonsdivision' : 'lordsdivision';
-                            return props.toggleFeatured(type, division.parliamentdotuk, true);
-                        };
+function isTrending(obj) {
+    return (obj.reason == 'social')
+}
 
-                        return (
-                            <FeaturedItem key={division.parliamentdotuk} featured={true} onClick={toggleFeatured}>
-                                {division.title}
-                            </FeaturedItem>
-                        );
-                    })
-                }
-
-            </ScrollableColumn>
-        </div>
-    );
+function isFeatured(obj) {
+    return (obj.reason == 'feature');
 }
 
 export default Zeitgeist
