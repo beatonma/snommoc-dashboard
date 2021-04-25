@@ -1,18 +1,32 @@
 import React from 'react';
-import Symbol from "./symbol";
+import { Icon, MaterialIcon } from "./symbol";
 import { NoContent } from "./empty";
 import { ListItem } from './list';
 import './../scss/featured.scss';
 
 function FeaturedItem(props) {
+    const icons = <Icons social={props.social} featured={props.featured} onFeaturedClick={props.onClick} />
+
     return (
-        <ListItem className={`space-between ${props.className || ''}`}>
+        <ListItem className={`space-between ${props.className || ''}`} icons={icons}>
             <div className='featured-content'>
                 {props.children}
             </div>
-            <FeaturedIcon featured={props.featured} onClick={props.onClick} />
         </ListItem>
     );
+}
+
+function Icons(props) {
+    if (props.social) return <SocialIcon />
+    else return <FeaturedIcon featured={props.featured} onClick={props.onFeaturedClick} />;
+}
+
+/**
+ * An icon which is displayed if the item is in the zeitgeist because of social activity.
+ */
+function SocialIcon() {
+    return <MaterialIcon title='Trending' className='trailing-icon' icon={Icon.trending} />
+    // return <span title='Trending' className='trailing-icon material-icons'>whatshot</span>;
 }
 
 /**
@@ -24,13 +38,15 @@ function FeaturedIcon(props) {
 
     let icon;
     if (featured === null) return <NoContent className="featured-icon" />;
-    else if (featured == false) icon = Symbol.unfeatured;
-    else icon = Symbol.featured;
+    else if (featured === false) icon = Icon.unfeatured;
+    else icon = Icon.featured;
 
     return (
-        <div className="featured-icon" onClick={props.onClick}>
-            {icon}
-        </div>
+        <MaterialIcon
+            title={featured ? 'Featured' : 'Mark as featured'}
+            className='featured-icon'
+            onClick={props.onClick}
+            icon={icon} />
     );
 }
 
