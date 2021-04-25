@@ -8,7 +8,7 @@ function Tag(props) {
 
 function TODO(props) {
     return (
-        <Tag className="todo">TODO</Tag>
+        <Tag className="todo">TODO {props.children}</Tag>
     );
 }
 
