@@ -6,8 +6,8 @@ function DateTime(props) {
     const now = new Date();
     const datetime = new Date(props.datetime);
 
-    const [nowYear, nowMonth, nowDate] = parseDate(now);
-    const [year, month, date] = parseDate(datetime);
+    const [nowYear, , nowDate] = parseDate(now);
+    const [year, , date] = parseDate(datetime);
 
     if (now - datetime < 3_600_000 * 48) { // Dates are within 48 hours of each other.
         if (nowDate == date) {
@@ -23,7 +23,6 @@ function DateTime(props) {
 
     if (dateText == '') {
         if (nowYear == year) {
-            console.log('this year');
             dateText = datetime.toLocaleString(
                 'default',
                 {
@@ -32,8 +31,6 @@ function DateTime(props) {
                 }
             );
         }
-
-
         else {
             dateText = datetime.toLocaleString(
                 'default',
@@ -47,8 +44,6 @@ function DateTime(props) {
     }
 
     const timeText = datetime.toLocaleTimeString().split(' ')[0];
-
-
     const title = props.title || datetime.toLocaleString();
 
     return (
