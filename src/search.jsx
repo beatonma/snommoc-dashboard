@@ -1,5 +1,5 @@
 import React from 'react';
-import Symbol from './components/symbol';
+import { Icon, MaterialIcon, Symbol } from './components/symbol';
 import { TaggedRow } from './components/tag';
 import { ScrollableColumn } from './components/list';
 import { NoContent } from './components/empty';
@@ -99,7 +99,7 @@ class SearchForm extends React.Component {
                                 type="text" value={this.state.query} onChange={this.handleChange}
                                 onFocus={this.onFocus} />
                         </span>
-                        <span className="action-close-search" onClick={this.onBlur}>{Symbol.close}</span>
+                        <MaterialIcon icon={Icon.close} onClick={this.onBlur} className='action-close-search' />
                     </div>
 
                     {searchResultsBlock}
@@ -120,28 +120,26 @@ function SearchResults(props) {
     }
 
     return (
-        <div className="search-results">
-            <ScrollableColumn>
-                {
-                    Object.keys(results).map(key => {
-                        const items = results[key];
+        <ScrollableColumn className='search-results'>
+            {
+                Object.keys(results).map(key => {
+                    const items = results[key];
 
-                        return items.map(item => {
-                            const toggleFeatured = (() =>
-                                props.onToggleFeatured(key, item.id, item.featured)
-                            );
+                    return items.map(item => {
+                        const toggleFeatured = (() =>
+                            props.onToggleFeatured(key, item.id, item.featured)
+                        );
 
-                            return (
-                                <SearchResultItem
-                                    key={item.id}
-                                    type={key} name={item.name} url={item.url} id={item.id} featured={item.featured}
-                                    onToggleFeatured={toggleFeatured} />
-                            );
-                        });
-                    })
-                }
-            </ScrollableColumn>
-        </div>
+                        return (
+                            <SearchResultItem
+                                key={item.id}
+                                type={key} name={item.name} url={item.url} id={item.id} featured={item.featured}
+                                onToggleFeatured={toggleFeatured} />
+                        );
+                    });
+                })
+            }
+        </ScrollableColumn>
     );
 }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import DateTime from './components/datetime';
 import { NoContent } from './components/empty';
 import { ListItem, ScrollableColumn } from "./components/list";
-import Symbol from "./components/symbol";
+import { Icon, MaterialIcon } from "./components/symbol";
 import { dashboardUrl } from "./local/local";
 import './scss/tasks.scss';
 
@@ -113,12 +113,12 @@ function StatusIcon(props) {
     const task = props.task;
 
     let icon;
-    if (task.failed) icon = Symbol.times;
-    else if (task.complete) icon = Symbol.check;
-    else icon = Symbol.ellips;
+    if (task.failed) icon = Icon.error;
+    else if (task.complete) icon = Icon.check;
+    else icon = Icon.pending;
 
     return (
-        <span className='status'>{icon}</span>
+        <MaterialIcon className='status' icon={icon} />
     )
 }
 
