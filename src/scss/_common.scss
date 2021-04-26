@@ -44,6 +44,11 @@ a:visited {
     flex-direction: row;
 }
 
+.centered {
+    margin: auto;
+    width: fit-content;
+}
+
 .space-between {
     @extend .row;
     justify-content: space-between;
