@@ -1,10 +1,10 @@
-import React from 'react';
-import { extendedClassname } from '../util/elements';
-import { NoContent } from './empty';
+import React from "react";
+import { extendedClassname } from "../util/elements";
+import { NoContent } from "./empty";
 
 function ScrollableColumn(props) {
     return (
-        <div className={extendedClassname('list-scroll', props)}>
+        <div className={extendedClassname("list-scroll", props)}>
             {props.children}
         </div>
     );
@@ -12,16 +12,19 @@ function ScrollableColumn(props) {
 
 function ListItem(props) {
     const icons = props.icons || <NoContent />;
-    const content = props.title && props.content
-        ? <div>
-            <ItemTitle>{props.title}</ItemTitle>
-            <ItemContent>{props.content}</ItemContent>
-        </div>
-        : <NoContent />
+    const content =
+        props.title && props.content ? (
+            <div>
+                <ItemTitle>{props.title}</ItemTitle>
+                <ItemContent>{props.content}</ItemContent>
+            </div>
+        ) : (
+            <NoContent />
+        );
 
     return (
         <div
-            className={extendedClassname('list-item', props)}
+            className={extendedClassname("list-item", props)}
             onClick={props.onClick}
         >
             {content}
@@ -32,20 +35,19 @@ function ListItem(props) {
 }
 
 function ItemTitle(props) {
-    return <div className={extendedClassname('item-title', props)} >
-        {props.children}
-    </div>
+    return (
+        <div className={extendedClassname("item-title", props)}>
+            {props.children}
+        </div>
+    );
 }
 
 function ItemContent(props) {
-    return <div className={extendedClassname('item-content', props)} >
-        {props.children}
-    </div>
+    return (
+        <div className={extendedClassname("item-content", props)}>
+            {props.children}
+        </div>
+    );
 }
 
-export {
-    ScrollableColumn,
-    ListItem,
-    ItemTitle,
-    ItemContent,
-};
+export { ScrollableColumn, ListItem, ItemTitle, ItemContent };

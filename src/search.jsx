@@ -1,11 +1,11 @@
-import React from 'react';
-import { Icon, MaterialIcon, Symbol } from './components/symbol';
-import { TaggedRow } from './components/tag';
-import { ScrollableColumn } from './components/list';
-import { NoContent } from './components/empty';
-import { dashboardUrl } from './local/local';
-import { FeaturedItem } from './components/featured';
-import './scss/search.scss';
+import React from "react";
+import { Icon, MaterialIcon, Symbol } from "./components/symbol";
+import { TaggedRow } from "./components/tag";
+import { ScrollableColumn } from "./components/list";
+import { NoContent } from "./components/empty";
+import { dashboardUrl } from "./local/local";
+import { FeaturedItem } from "./components/featured";
+import "./scss/search.scss";
 
 /**
  * Sample response:
@@ -26,7 +26,7 @@ class SearchForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            query: '',
+            query: "",
             results: {},
             showResults: true,
             toggleFeatured: (targetType, targetId, isFeatured) => {
@@ -55,9 +55,7 @@ class SearchForm extends React.Component {
         const url = dashboardUrl(`search/${query}/`);
         fetch(url)
             .then(response => response.json())
-            .then(data =>
-                this.setResults(data)
-            );
+            .then(data => this.setResults(data));
     }
 
     onFocus() {
@@ -66,7 +64,7 @@ class SearchForm extends React.Component {
 
     onBlur() {
         this.setState({
-            query: '',
+            query: "",
             results: {},
         });
         window.focus();
@@ -84,10 +82,14 @@ class SearchForm extends React.Component {
 
         let searchResultsBlock;
         if (this.state.showResults) {
-            searchResultsBlock = <SearchResults results={this.state.results} onToggleFeatured={this.state.toggleFeatured} />
-        }
-        else {
-            searchResultsBlock = <NoContent />
+            searchResultsBlock = (
+                <SearchResults
+                    results={this.state.results}
+                    onToggleFeatured={this.state.toggleFeatured}
+                />
+            );
+        } else {
+            searchResultsBlock = <NoContent />;
         }
 
         return (
@@ -95,16 +97,24 @@ class SearchForm extends React.Component {
                 <form onSubmit={onSubmit} className="search-form">
                     <div className="search-bar-wrapper">
                         <span className="search-bar-span">
-                            <input className="search-bar" placeholder={`Search${Symbol.ellips}`}
-                                type="text" value={this.state.query} onChange={this.handleChange}
-                                onFocus={this.onFocus} />
+                            <input
+                                className="search-bar"
+                                placeholder={`Search${Symbol.ellips}`}
+                                type="text"
+                                value={this.state.query}
+                                onChange={this.handleChange}
+                                onFocus={this.onFocus}
+                            />
                         </span>
-                        <MaterialIcon icon={Icon.close} onClick={this.onBlur} className='action-close-search' />
+                        <MaterialIcon
+                            icon={Icon.close}
+                            onClick={this.onBlur}
+                            className="action-close-search"
+                        />
                     </div>
 
                     {searchResultsBlock}
                 </form>
-
             </div>
         );
     }
@@ -114,40 +124,47 @@ function SearchResults(props) {
     const results = props.results;
 
     if (Object.keys(results).length == 0) {
-        return (
-            <NoContent className="search-results" />
-        );
+        return <NoContent className="search-results" />;
     }
 
     return (
-        <ScrollableColumn className='search-results'>
-            {
-                Object.keys(results).map(key => {
-                    const items = results[key];
+        <ScrollableColumn className="search-results">
+            {Object.keys(results).map(key => {
+                const items = results[key];
 
-                    return items.map(item => {
-                        const toggleFeatured = (() =>
-                            props.onToggleFeatured(key, item.id, item.featured)
-                        );
+                return items.map(item => {
+                    const toggleFeatured = () =>
+                        props.onToggleFeatured(key, item.id, item.featured);
 
-                        return (
-                            <SearchResultItem
-                                key={item.id}
-                                type={key} name={item.name} url={item.url} id={item.id} featured={item.featured}
-                                onToggleFeatured={toggleFeatured} />
-                        );
-                    });
-                })
-            }
+                    return (
+                        <SearchResultItem
+                            key={item.id}
+                            type={key}
+                            name={item.name}
+                            url={item.url}
+                            id={item.id}
+                            featured={item.featured}
+                            onToggleFeatured={toggleFeatured}
+                        />
+                    );
+                });
+            })}
         </ScrollableColumn>
     );
 }
 
 function SearchResultItem(props) {
     return (
-        <FeaturedItem className='search-result' featured={props.featured} onClick={props.onToggleFeatured}>
+        <FeaturedItem
+            className="search-result"
+            featured={props.featured}
+            onClick={props.onToggleFeatured}
+        >
             <a href={props.url}>
-                <TaggedRow content={truncateString(props.name, 60)} tags={[`${props.type} ${props.id}`]} />
+                <TaggedRow
+                    content={truncateString(props.name, 60)}
+                    tags={[`${props.type} ${props.id}`]}
+                />
             </a>
         </FeaturedItem>
     );
@@ -160,4 +177,4 @@ function truncateString(str, num) {
     return str.slice(0, num) + Symbol.ellips;
 }
 
-export default SearchForm
+export default SearchForm;

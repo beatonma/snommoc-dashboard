@@ -27,6 +27,7 @@
     font-size: small;
 }
 
-a .list-item, a:hover .list-item {
+a .list-item,
+a:hover .list-item {
     color: color.$text;
 }

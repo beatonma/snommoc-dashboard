@@ -20,7 +20,11 @@ $ongoing: #ebd404;
 }
 
 .failed:hover {
-    background-color: change-color($color: color.$warn, $saturation: 50%, $lightness: 30%);
+    background-color: change-color(
+        $color: color.$warn,
+        $saturation: 50%,
+        $lightness: 30%
+    );
 }
 
 .complete .status {

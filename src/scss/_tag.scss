@@ -12,7 +12,10 @@
     text-align: center;
 }
 
-.tag, a:visited.tag, .tag a, .tag a:visited {
+a:visited.tag,
+.tag,
+.tag a,
+.tag a:visited {
     color: color.$onAccent;
 }
 

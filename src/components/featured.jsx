@@ -1,34 +1,51 @@
-import React from 'react';
+import React from "react";
 import { Icon, MaterialIcon } from "./symbol";
 import { NoContent } from "./empty";
-import { ListItem } from './list';
-import './../scss/featured.scss';
-import { extendedClassname } from '../util/elements';
+import { ListItem } from "./list";
+import "./../scss/featured.scss";
+import { extendedClassname } from "../util/elements";
 
 function FeaturedItem(props) {
-    const icons = <Icons social={props.social} featured={props.featured} onFeaturedClick={props.onClick} />
+    const icons = (
+        <Icons
+            social={props.social}
+            featured={props.featured}
+            onFeaturedClick={props.onClick}
+        />
+    );
 
     return (
         <ListItem
-            className={extendedClassname('space-between', props)}
-            icons={icons}>
-            <div className='featured-content'>
-                {props.children}
-            </div>
+            className={extendedClassname("space-between", props)}
+            icons={icons}
+        >
+            <div className="featured-content">{props.children}</div>
         </ListItem>
     );
 }
 
 function Icons(props) {
-    if (props.social) return <SocialIcon />
-    else return <FeaturedIcon featured={props.featured} onClick={props.onFeaturedClick} />;
+    if (props.social) return <SocialIcon />;
+    else
+        return (
+            <FeaturedIcon
+                featured={props.featured}
+                onClick={props.onFeaturedClick}
+            />
+        );
 }
 
 /**
  * An icon which is displayed if the item is in the zeitgeist because of social activity.
  */
 function SocialIcon() {
-    return <MaterialIcon title='Trending' className='trailing-icon' icon={Icon.trending} />
+    return (
+        <MaterialIcon
+            title="Trending"
+            className="trailing-icon"
+            icon={Icon.trending}
+        />
+    );
     // return <span title='Trending' className='trailing-icon material-icons'>whatshot</span>;
 }
 
@@ -46,11 +63,12 @@ function FeaturedIcon(props) {
 
     return (
         <MaterialIcon
-            title={featured ? 'Featured' : 'Mark as featured'}
-            className='featured-icon'
+            title={featured ? "Featured" : "Mark as featured"}
+            className="featured-icon"
             onClick={props.onClick}
-            icon={icon} />
+            icon={icon}
+        />
     );
 }
 
-export { FeaturedItem }
+export { FeaturedItem };

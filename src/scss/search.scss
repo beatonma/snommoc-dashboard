@@ -31,7 +31,8 @@ $searchbar-width: 80%;
     @include icons.content-trailing-icon;
 }
 
-.search-bar, .search-bar:focus {
+.search-bar,
+.search-bar:focus {
     width: 100%;
     padding: 8px 16px;
     border: none;
@@ -47,7 +48,8 @@ $searchbar-width: 80%;
     color: color.$text-dark;
 }
 
-.search-result a, .search-results a:visited {
+.search-result a,
+.search-results a:visited {
     @include icons.content-trailing-icon;
     color: color.$text;
 }
