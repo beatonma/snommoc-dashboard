@@ -9,8 +9,29 @@ A simple dashboard overview for managing server content.
 
 ----
 
-To bundle the application run:
+### Requirements
 
+The project expects the following import to work:
+
+```javascript
+import { apiUrl, dashboardUrl } from './local/local';
 ```
+
+These functions should accept a URL path fragment and construct a usable
+URL.
+
+e.g.
+```javascript
+function apiUrl(path) {
+    return `https://my-api.example.com/${path}`;
+}
+```
+
+----
+### Bundle
+
+Check the value of `module.exports.output` in `webpack.config.js` and bundle with:
+
+```bash
 npm run build
 ```
