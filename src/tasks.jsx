@@ -82,7 +82,7 @@ function Task(props) {
 
 function TimeStamp(props) {
     const start = new Date(props.started);
-    const end = new Date(props.finished);
+    const end = props.finished ? new Date(props.finished) : new Date();
     const duration = end - start;
     const title =
         Math.floor(duration / 1000) == 0
@@ -92,7 +92,7 @@ function TimeStamp(props) {
     return (
         <div className="task-time">
             <Duration duration={duration} />
-            <DateTime title={title} datetime={end} />
+            <DateTime title={title} datetime={props.finished ? end : start} />
         </div>
     );
 }
