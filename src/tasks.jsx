@@ -54,7 +54,13 @@ function Task(props) {
     const cleanTaskTitle = title =>
         title.replace("[Finished] ", "").replace("[Failed] ", "");
     const cleanTaskContent = content =>
-        content?.replace(/\'([\w]+)\'/g, "<code>$1</code>");
+        content
+            ? "<p>" +
+              content
+                  ?.replace(/(?:\r\n|\r|\n)/g, "</p><p>")
+                  ?.replace(/[\"\']{1}([^\s]+)[\"\']{1}/g, "<code>$1</code>") +
+              "</p>"
+            : null;
 
     return (
         <ListItem className={`task ${statusClass}`}>
@@ -84,6 +90,7 @@ function TimeStamp(props) {
     const start = new Date(props.started);
     const end = props.finished ? new Date(props.finished) : new Date();
     const duration = end - start;
+
     const title =
         Math.floor(duration / 1000) == 0
             ? start.toLocaleString()
@@ -107,13 +114,13 @@ function Duration(props) {
     const totalHours = Math.floor(d / 3_600_000);
 
     const hours = totalHours;
-    const minutes = totalMinutes - hours * 3_600_000;
-    const seconds = totalSeconds - hours * 3_600_000 - minutes * 60_000;
+    const minutes = totalMinutes - hours * 60;
+    const seconds = totalSeconds - hours * 3600 - minutes * 60;
 
     const hoursText = hours > 1 ? `${hours}hr` : "";
     const minutesText =
-        totalMinutes > 3 && totalHours < 4 ? `${minutes}min` : "";
-    const secondsText = totalMinutes < 15 ? `${seconds}sec` : "";
+        totalMinutes > 4 && totalMinutes < 56 && totalHours < 4 ? `${minutes}min` : "";
+    const secondsText = totalMinutes < 15 && seconds > 4 && seconds < 56 ? `${seconds}sec` : "";
 
     const text = [hoursText, minutesText, secondsText]
         .filter(str => str)

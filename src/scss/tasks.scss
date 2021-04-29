@@ -3,6 +3,8 @@
 
 $complete: #36f443;
 $ongoing: #ebd404;
+$ongoing-hover: #eede5c;
+$failed-hover: #df2e20;
 
 .task-content {
     @extend .item-content;
@@ -13,6 +15,10 @@ $ongoing: #ebd404;
     font-size: smaller;
 }
 
+.task-duration {
+    font-size: smaller;
+}
+
 .failed {
     background-color: color.$warn;
     color: color.$onWarn;
@@ -20,11 +26,7 @@ $ongoing: #ebd404;
 }
 
 .failed:hover {
-    background-color: change-color(
-        $color: color.$warn,
-        $saturation: 50%,
-        $lightness: 30%
-    );
+    background-color: $failed-hover;
 }
 
 .complete .status {
@@ -34,6 +36,10 @@ $ongoing: #ebd404;
 .ongoing {
     background-color: $ongoing;
     color: color.$text-dark;
+}
+
+.ongoing:hover {
+    background-color: $ongoing-hover;
 }
 
 .status {
