@@ -58,7 +58,7 @@ function Task(props) {
             ? "<p>" +
               content
                   ?.replace(/(?:\r\n|\r|\n)/g, "</p><p>")
-                  ?.replace(/[\"\']{1}([^\s]+)[\"\']{1}/g, "<code>$1</code>") +
+                  ?.replace(/[\"\']{1}([^\s]+?)[\"\']{1}/g, "<code>$1</code>") +
               "</p>"
             : null;
 
