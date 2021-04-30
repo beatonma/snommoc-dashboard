@@ -33,12 +33,23 @@ class SearchForm extends React.Component {
                 props.toggleFeatured(targetType, targetId, isFeatured);
                 this.handleSubmit(this.state.query);
             },
+            error: null,
+            networkError: null,
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onBlur = this.onBlur.bind(this);
+    }
+
+    static getDerivedStateFromError(error) {
+        return { error: error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error(error);
+        console.error(errorInfo);
     }
 
     handleChange(event) {
@@ -55,7 +66,8 @@ class SearchForm extends React.Component {
         const url = dashboardUrl(`search/${query}/`);
         fetch(url)
             .then(response => response.json())
-            .then(data => this.setResults(data));
+            .then(data => this.setResults(data))
+            .catch(err => this.setState({ networkError: err }));
     }
 
     onFocus() {
@@ -75,6 +87,12 @@ class SearchForm extends React.Component {
     }
 
     render() {
+        const error = this.state.error ? (
+            <Error message={this.state.error} />
+        ) : (
+            <NoContent />
+        );
+
         function onSubmit(event) {
             event.preventDefault();
             this.handleSubmit(this.state.query);
@@ -94,6 +112,7 @@ class SearchForm extends React.Component {
 
         return (
             <div>
+                {error}
                 <form onSubmit={onSubmit} className="search-form">
                     <div className="search-bar-wrapper">
                         <span className="search-bar-span">

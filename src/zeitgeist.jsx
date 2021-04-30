@@ -67,7 +67,7 @@ import { TaggedRow } from "./components/tag";
 function Zeitgeist(props) {
     const zeitgeist = props.zeitgeist;
     if (Object.keys(zeitgeist).length == 0) {
-        return <NoContent />;
+        return <NoContent message="No zeitgeist content" />;
     }
 
     return (

@@ -7,6 +7,8 @@ import Zeitgeist from "./zeitgeist";
 import { apiUrl, dashboardUrl } from "./local/local";
 import { getCsrfToken } from "./util/cookies";
 import RecentTasks from "./tasks";
+import { Error, InlineError } from "./components/error";
+import { NoContent } from "./components/empty";
 
 function app() {
     ReactDom.render(<Dashboard />, document.getElementById("dashboard"));
@@ -17,6 +19,8 @@ class Dashboard extends React.Component {
         super(props);
         this.state = {
             zeitgeist: {},
+            error: null,
+            networkError: null,
         };
 
         this.refreshZeitgeist = this.refreshZeitgeist.bind(this);
@@ -25,11 +29,21 @@ class Dashboard extends React.Component {
         this.refreshZeitgeist();
     }
 
+    static getDerivedStateFromError(error) {
+        return { error: error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error(error);
+        console.error(errorInfo);
+    }
+
     refreshZeitgeist() {
         const url = apiUrl("zeitgeist/");
         fetch(url)
             .then(response => response.json())
-            .then(results => this.setState({ zeitgeist: results }));
+            .then(results => this.setState({ zeitgeist: results }))
+            .catch(err => this.setState({ networkError: err }));
     }
 
     toggleFeatured(targetType, targetId, isFeatured) {
@@ -45,12 +59,19 @@ class Dashboard extends React.Component {
             },
         };
 
-        fetch(url, config).then(response => this.refreshZeitgeist());
+        fetch(url, config)
+            .then(response => this.refreshZeitgeist())
+            .catch(err => this.setState({ error: err }));
     }
 
     render() {
+        if (this.state.error) {
+            return <Error message={this.state.error} />;
+        }
+
         return (
             <div>
+                <InlineError message={this.state.networkError} />
                 <SearchForm toggleFeatured={this.toggleFeatured} />
                 <UnlinkedConstituencies />
                 <RecentTasks />

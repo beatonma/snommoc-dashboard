@@ -1,4 +1,6 @@
 import React from "react";
+import { NoContent } from "./components/empty";
+import { InlineError } from "./components/error";
 import { Tag, TaggedRow, TODO } from "./components/tag";
 import { dashboardUrl } from "./local/local.js";
 
@@ -29,10 +31,21 @@ class UnlinkedConstituencies extends React.Component {
         super(props);
         this.state = {
             results: [],
+            error: null,
+            networkError: null,
         };
 
         this.update = this.update.bind(this);
         this.update();
+    }
+
+    static getDerivedStateFromError(error) {
+        return { error: error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error(error);
+        console.error(errorInfo);
     }
 
     update() {
@@ -40,13 +53,19 @@ class UnlinkedConstituencies extends React.Component {
         fetch(url)
             .then(response => response.json())
             .then(json => json.results)
-            .then(results => this.setState({ results: results }));
+            .then(results => this.setState({ results: results }))
+            .catch(err => this.setState({ networkError: err }));
     }
 
     render() {
+        if (this.state.error) {
+            return <Error message={this.state.error} />;
+        }
+
         return (
             <section>
                 <h1>Unlinked Constituencies</h1>
+                <InlineError message={this.state.networkError} />
                 <TODO />
                 <div className="unlinked-constituencies list-scroll">
                     {this.state.results.map(item => (
@@ -54,7 +73,7 @@ class UnlinkedConstituencies extends React.Component {
                             key={item.name}
                             name={item.name}
                             url={item.url}
-                            mp={item.mp}
+                            person={item.person}
                             election={item.election}
                         />
                     ))}
@@ -69,7 +88,7 @@ function UnlinkedConstituency(props) {
         <div className="unlinked-constituency list-item">
             <TaggedRow content={<a href={props.url}>{props.name}</a>}>
                 <Tag>
-                    <a href={props.mp.url}>{props.mp.name}</a>
+                    <a href={props.person.url}>{props.person.name}</a>
                 </Tag>
                 <Tag>
                     <a href={props.election.url}>{props.election.name}</a>

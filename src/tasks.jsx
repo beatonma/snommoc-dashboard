@@ -1,6 +1,7 @@
 import React from "react";
 import DateTime from "./components/datetime";
 import { NoContent } from "./components/empty";
+import { Error, InlineError } from "./components/error";
 import { ListItem, ScrollableColumn } from "./components/list";
 import { Icon, MaterialIcon } from "./components/symbol";
 import { dashboardUrl } from "./local/local";
@@ -12,9 +13,19 @@ class RecentTasks extends React.Component {
         this.state = {
             tasks: [],
             error: null,
+            networkError: null,
         };
 
         this.update();
+    }
+
+    static getDerivedStateFromError(error) {
+        return { error: error };
+    }
+
+    componentDidCatch(error, errorInfo) {
+        console.error(error);
+        console.error(errorInfo);
     }
 
     update() {
@@ -22,14 +33,19 @@ class RecentTasks extends React.Component {
         fetch(url)
             .then(response => response.json())
             .then(json => json.results)
-            .then(tasks => {
-                this.setState({ tasks: tasks });
-            });
+            .then(tasks => this.setState({ tasks: tasks }))
+            .catch(err => this.setState({ networkError: err }));
     }
 
     render() {
+        if (this.state.error) {
+            return <Error message={this.state.error} />;
+        }
+
         return (
             <section>
+                <InlineError message={this.state.networkError} />
+                
                 <h1>Recent tasks</h1>
                 <div className="recent-tasks">
                     <ScrollableColumn>
@@ -119,8 +135,11 @@ function Duration(props) {
 
     const hoursText = hours > 1 ? `${hours}hr` : "";
     const minutesText =
-        totalMinutes > 4 && totalMinutes < 56 && totalHours < 4 ? `${minutes}min` : "";
-    const secondsText = totalMinutes < 15 && seconds > 4 && seconds < 56 ? `${seconds}sec` : "";
+        totalMinutes > 4 && totalMinutes < 56 && totalHours < 4
+            ? `${minutes}min`
+            : "";
+    const secondsText =
+        totalMinutes < 15 && seconds > 4 && seconds < 56 ? `${seconds}sec` : "";
 
     const text = [hoursText, minutesText, secondsText]
         .filter(str => str)
