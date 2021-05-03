@@ -10,4 +10,4 @@ function NoContent(props) {
     return <></>;
 }
 
-export { NoContent };
+export default NoContent;

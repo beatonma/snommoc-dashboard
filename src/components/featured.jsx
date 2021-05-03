@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon, MaterialIcon } from "./symbol";
-import { NoContent } from "./empty";
+import NoContent from "./empty";
 import { ListItem } from "./list";
 import "./../scss/featured.scss";
 import { extendedClassname } from "../util/elements";
@@ -71,4 +71,4 @@ function FeaturedIcon(props) {
     );
 }
 
-export { FeaturedItem };
+export default FeaturedItem;

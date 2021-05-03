@@ -2,6 +2,8 @@
 @use 'color';
 @use 'tag';
 @use 'list';
+@use 'alignment';
+@use 'datetime';
 
 body {
     background: color.$background;
@@ -39,18 +41,6 @@ a:visited {
     color: color.$accent-secondary;
 }
 
-.row {
-    display: flex;
-    flex-direction: row;
-}
-
-.centered {
-    margin: auto;
-    width: fit-content;
-}
-
-.space-between {
-    @extend .row;
-    justify-content: space-between;
-    width: -webkit-fill-available;
+.raw {
+    font-family: monospace;
 }

@@ -1,11 +1,12 @@
 import React from "react";
-import DateTime from "./components/datetime";
-import { NoContent } from "./components/empty";
-import { Error, InlineError } from "./components/error";
+import { DateTime } from "./components/datetime";
+import NoContent from "./components/empty";
 import { ListItem, ScrollableColumn } from "./components/list";
+import Section from "./components/section";
 import { Icon, MaterialIcon } from "./components/symbol";
-import { dashboardUrl } from "./local/local";
+import Urls from "./local/local";
 import "./scss/tasks.scss";
+
 
 class RecentTasks extends React.Component {
     constructor(props) {
@@ -29,8 +30,7 @@ class RecentTasks extends React.Component {
     }
 
     update() {
-        const url = dashboardUrl("recent-notifications/");
-        fetch(url)
+        fetch(Urls.tasks)
             .then(response => response.json())
             .then(json => json.results)
             .then(tasks => this.setState({ tasks: tasks }))
@@ -38,15 +38,13 @@ class RecentTasks extends React.Component {
     }
 
     render() {
-        if (this.state.error) {
-            return <Error message={this.state.error} />;
-        }
-
         return (
-            <section>
-                <InlineError message={this.state.networkError} />
-                
-                <h1>Recent tasks</h1>
+            <Section
+                title="Recent tasks"
+                url={Urls.tasks}
+                error={this.state.error}
+                networkError={this.state.networkError}
+            >
                 <div className="recent-tasks">
                     <ScrollableColumn>
                         {this.state.tasks.map(task => (
@@ -54,7 +52,7 @@ class RecentTasks extends React.Component {
                         ))}
                     </ScrollableColumn>
                 </div>
-            </section>
+            </Section>
         );
     }
 }

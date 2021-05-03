@@ -14,18 +14,22 @@ A simple dashboard overview for managing server content.
 The project expects the following import to work:
 
 ```javascript
-import { apiUrl, dashboardUrl } from "./local/local";
+import Urls from "./local/local";
 ```
 
-These functions should accept a URL path fragment and construct a usable
-URL.
-
-e.g.
+This object should have the following signature:
 
 ```javascript
-function apiUrl(path) {
-    return `https://my-api.example.com/${path}`;
-}
+const Urls = {
+    api: (path) => url,
+    dashboard: (path) => url,
+    search: (query) => url,
+    tasks: url,
+    toggleFeatured: (targetType, id) => url,
+    unlinkedConstituency: (id) => url,
+    unlinkedConstituencies: url,
+    zeitgeist: url,
+};
 ```
 
 ---

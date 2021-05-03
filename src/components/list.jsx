@@ -1,6 +1,6 @@
 import React from "react";
 import { extendedClassname } from "../util/elements";
-import { NoContent } from "./empty";
+import NoContent from "./empty";
 
 function ScrollableColumn(props) {
     return (

@@ -1,13 +1,15 @@
 import React from "react";
-import { NoContent } from "./components/empty";
-import { FeaturedItem } from "./components/featured";
+import NoContent from "./components/empty";
+import FeaturedItem from "./components/featured";
 import {
     ItemTitle,
     ItemContent,
     ListItem,
     ScrollableColumn,
 } from "./components/list";
+import Section from "./components/section";
 import { TaggedRow } from "./components/tag";
+import Urls from "./local/local";
 
 /**
  * {
@@ -71,8 +73,7 @@ function Zeitgeist(props) {
     }
 
     return (
-        <section>
-            <h1>Zeitgeist</h1>
+        <Section title="Zeitgeist" url={Urls.zeitgeist}>
             <div className="zeitgeist">
                 <Motd motd={zeitgeist.motd} />
                 <FeaturedPeople
@@ -88,11 +89,11 @@ function Zeitgeist(props) {
                     toggleFeatured={props.toggleFeatured}
                 />
             </div>
-        </section>
+        </Section>
     );
 }
 
-function Section(props) {
+function Group(props) {
     return (
         <div>
             <h3>{props.title}</h3>
@@ -103,7 +104,7 @@ function Section(props) {
 
 function Motd(props) {
     return (
-        <Section title="MOTD">
+        <Group title="MOTD">
             {props.motd.map(motd => {
                 const content = (
                     <div>
@@ -127,13 +128,13 @@ function Motd(props) {
                     </a>
                 );
             })}
-        </Section>
+        </Group>
     );
 }
 
-function ZeitgeistSection(props) {
+function ZeitgeistGroup(props) {
     return (
-        <Section title={props.title}>
+        <Group title={props.title}>
             {props.items.map(zeitgeistItem => {
                 const item = zeitgeistItem.target;
                 const featured = isFeatured(zeitgeistItem);
@@ -153,13 +154,13 @@ function ZeitgeistSection(props) {
                     </FeaturedItem>
                 );
             })}
-        </Section>
+        </Group>
     );
 }
 
 function FeaturedPeople(props) {
     return (
-        <ZeitgeistSection
+        <ZeitgeistGroup
             title="People"
             type="person"
             items={props.people}
@@ -170,7 +171,7 @@ function FeaturedPeople(props) {
 
 function FeaturedBills(props) {
     return (
-        <ZeitgeistSection
+        <ZeitgeistGroup
             title="Bills"
             type="bill"
             items={props.bills}
@@ -181,7 +182,7 @@ function FeaturedBills(props) {
 
 function FeaturedDivisions(props) {
     return (
-        <ZeitgeistSection
+        <ZeitgeistGroup
             title="Divisions"
             typeOf={division =>
                 division.house.toLowerCase() == "commons"

@@ -1,0 +1,14 @@
+@use 'color';
+@use 'vars';
+
+.spotlight {
+    margin: 1rem 1rem 3rem 1rem;
+    padding: 0;
+    border: vars.$table-border;
+    border-radius: 0.5rem;
+    border-color: color.$text;
+}
+
+.spotlight section {
+    margin: .1rem;
+}

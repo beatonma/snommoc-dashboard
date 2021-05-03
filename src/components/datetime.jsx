@@ -1,6 +1,68 @@
 import React from "react";
+import { extendedClassname } from "../util/elements";
+import NoContent from "./empty";
 
+function DateOnly(props) {
+    if (props.date == null) {
+        return <NoContent />;
+    }
+
+    const now = new Date();
+    const date = new Date(props.date);
+
+    const [nowYear, ,] = parseDate(now);
+    const [year, ,] = parseDate(date);
+
+    let dateText;
+    if (nowYear == year) {
+        dateText = date.toLocaleString("default", {
+            day: "numeric",
+            month: "short",
+        });
+    } else {
+        dateText = date.toLocaleString("default", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    }
+
+    return (
+        <span className={extendedClassname("", props)}>
+            <time title={date.toISOString()} dateTime={props.date}>
+                {`${dateText}`}
+            </time>
+        </span>
+    );
+}
+
+function DateRange(props) {
+    if (props.start == null && props.end == null) {
+        return <NoContent />;
+    }
+
+    if (props.end == null) {
+        return (
+            <div className={extendedClassname('daterange', props)}>
+                Since <DateOnly date={props.start} />
+            </div>
+        );
+    }
+
+    return (
+        <div className={extendedClassname("daterange", props)}>
+            <DateOnly date={props.start} /> - <DateOnly date={props.end} />
+        </div>
+    );
+}
+
+/**
+ * Display a datetime relative to current datetime.
+ */
 function DateTime(props) {
+    if (props.datetime == null) {
+        return <NoContent />;
+    }
     let dateText = "";
 
     const now = new Date();
@@ -56,4 +118,4 @@ function parseDate(date) {
         .map(it => parseInt(it));
 }
 
-export default DateTime;
+export { DateRange, DateTime, DateOnly };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { NoContent } from './empty';
+import NoContent from './empty';
 
 function Error(props) {
     return (

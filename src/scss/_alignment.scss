@@ -1,0 +1,20 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.space-between {
+    @extend .row;
+    justify-content: space-between;
+    width: -webkit-fill-available;
+}
+
+.centered {
+    margin: auto;
+    width: fit-content;
+}
+
+.text-right {
+    text-align: end;
+}

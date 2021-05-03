@@ -2,10 +2,11 @@ import React from "react";
 import { Icon, MaterialIcon, Symbol } from "./components/symbol";
 import { TaggedRow } from "./components/tag";
 import { ScrollableColumn } from "./components/list";
-import { NoContent } from "./components/empty";
-import { dashboardUrl } from "./local/local";
-import { FeaturedItem } from "./components/featured";
+import NoContent from "./components/empty";
+import Urls from "./local/local";
+import FeaturedItem from "./components/featured";
 import "./scss/search.scss";
+import { DateRange, DateTime } from "./components/datetime";
 
 /**
  * Sample response:
@@ -63,8 +64,7 @@ class SearchForm extends React.Component {
             return;
         }
 
-        const url = dashboardUrl(`search/${query}/`);
-        fetch(url)
+        fetch(Urls.search(query))
             .then(response => response.json())
             .then(data => this.setResults(data))
             .catch(err => this.setState({ networkError: err }));
@@ -110,6 +110,14 @@ class SearchForm extends React.Component {
             searchResultsBlock = <NoContent />;
         }
 
+        const rawLink = this.state.query ? (
+            <span className="raw">
+                [<a href={Urls.search(this.state.query)}>raw</a>]
+            </span>
+        ) : (
+            <NoContent />
+        );
+
         return (
             <div>
                 {error}
@@ -125,6 +133,7 @@ class SearchForm extends React.Component {
                                 onFocus={this.onFocus}
                             />
                         </span>
+                        {rawLink}
                         <MaterialIcon
                             icon={Icon.close}
                             onClick={this.onBlur}
@@ -150,20 +159,36 @@ function SearchResults(props) {
         <ScrollableColumn className="search-results">
             {Object.keys(results).map(key => {
                 const items = results[key];
+                items.sort((a, b) => {
+                    if (a.score != b.score) {
+                        return b.score - a.score;
+                    }
+                    if (a.start && b.start) {
+                        return b.start.localeCompare(a.start);
+                    }
+                    return 0;
+                });
 
                 return items.map(item => {
                     const toggleFeatured = () =>
-                        props.onToggleFeatured(key, item.id, item.featured);
+                        props.onToggleFeatured(
+                            item.type,
+                            item.id,
+                            item.featured
+                        );
 
                     return (
                         <SearchResultItem
                             key={item.id}
-                            type={key}
+                            type={item.type}
                             name={item.name}
                             url={item.url}
                             id={item.id}
                             featured={item.featured}
                             onToggleFeatured={toggleFeatured}
+                            start={item.start}
+                            end={item.end}
+                            score={item.score}
                         />
                     );
                 });
@@ -181,7 +206,13 @@ function SearchResultItem(props) {
         >
             <a href={props.url}>
                 <TaggedRow
-                    content={truncateString(props.name, 60)}
+                    content={
+                        <div>
+                            <div>{truncateString(props.name, 60)}</div>
+                            <DateRange start={props.start} end={props.end} />
+                            <DateTime datetime={props.date} />
+                        </div>
+                    }
                     tags={[`${props.type} ${props.id}`]}
                 />
             </a>
