@@ -66,7 +66,7 @@ class Dashboard extends React.Component {
     }
 
     toggleFeatured(targetType, targetId, isFeatured) {
-        const url = Urls.toggleFeatured(targetType, targetId);
+        const url = Urls.actions.toggleFeatured(targetType, targetId);
         const requestType = isFeatured ? "DELETE" : "POST";
         const config = {
             method: requestType,

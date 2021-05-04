@@ -64,7 +64,7 @@ class SearchForm extends React.Component {
             return;
         }
 
-        fetch(Urls.search(query))
+        fetch(Urls.actions.search(query))
             .then(response => response.json())
             .then(data => this.setResults(data))
             .catch(err => this.setState({ networkError: err }));
@@ -112,7 +112,7 @@ class SearchForm extends React.Component {
 
         const rawLink = this.state.query ? (
             <span className="raw">
-                [<a href={Urls.search(this.state.query)}>raw</a>]
+                [<a href={Urls.actions.search(this.state.query)}>raw</a>]
             </span>
         ) : (
             <NoContent />

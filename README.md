@@ -23,12 +23,15 @@ This object should have the following signature:
 const Urls = {
     api: (path) => url,
     dashboard: (path) => url,
-    search: (query) => url,
     tasks: url,
-    toggleFeatured: (targetType, id) => url,
     unlinkedConstituency: (id) => url,
     unlinkedConstituencies: url,
     zeitgeist: url,
+    actions: {
+        search: (query) => url,
+        confirmConstituency: (unlinkedID, constituencyID) => url,
+        toggleFeatured: (targetType, id) => url,
+    }
 };
 ```
 
