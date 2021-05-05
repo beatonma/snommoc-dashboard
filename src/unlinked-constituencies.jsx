@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router";
+import { useHistory, withRouter } from "react-router";
 import { DateOnly, DateRange } from "./components/datetime";
 import NoContent from "./components/empty";
 import {
@@ -9,9 +9,11 @@ import {
     ScrollableColumn,
 } from "./components/list";
 import Section from "./components/section";
-import { Tag, TaggedRow, TODO } from "./components/tag";
+import { Icon, MaterialIcon } from "./components/symbol";
+import { TaggedRow, TagLink, TODO } from "./components/tag";
 import { Spotlight } from "./focussed";
 import Urls from "./local/local.js";
+import { requestConfig } from "./util/actions";
 
 /**
  * Sample response:
@@ -103,12 +105,10 @@ function UnlinkedConstituency(props) {
             onClick={handleOnClick}
         >
             <TaggedRow content={<a href={props.url}>{props.name}</a>}>
-                <Tag>
-                    <a href={props.person.url}>{props.person.name}</a>
-                </Tag>
-                <Tag>
-                    <a href={props.election.url}>{props.election.name}</a>
-                </Tag>
+                <TagLink href={props.person.url}>{props.person.name}</TagLink>
+                <TagLink href={props.election.url}>
+                    {props.election.name}
+                </TagLink>
             </TaggedRow>
         </div>
     );
@@ -164,6 +164,10 @@ class UnlinkedConstituencyDetail extends React.Component {
 
         this.update = this.update.bind(this);
         this.update();
+
+        this.confirmLinkToConstituency = this.confirmLinkToConstituency.bind(
+            this
+        );
     }
 
     static getDerivedStateFromError(error) {
@@ -182,12 +186,30 @@ class UnlinkedConstituencyDetail extends React.Component {
             .catch(err => this.setState({ networkError: err }));
     }
 
+    confirmLinkToConstituency(history, unlinkedID, constituencyID) {
+        const config = requestConfig("POST");
+
+        fetch(
+            Urls.actions.confirmConstituency(unlinkedID, constituencyID),
+            config
+        )
+            .then(response => {
+                if (response.status < 300) {
+                    history.push(Urls.dashboardHome);
+                }
+            })
+            .catch(err => this.setState({ networkError: err }));
+    }
+
     render() {
         const data = this.state.data;
 
         if (!data) {
             return <NoContent />;
         }
+
+        const history = this.props.history;
+        const suggestions = data.suggestions.sort((a, b) => b.score - a.score);
 
         return (
             <Spotlight>
@@ -211,10 +233,17 @@ class UnlinkedConstituencyDetail extends React.Component {
 
                         <h4>Suggested matches</h4>
                         <ScrollableColumn>
-                            {data?.suggestions?.map(constituency => (
+                            {suggestions.map(constituency => (
                                 <SuggestedConstituency
                                     key={constituency.id}
                                     suggestion={constituency}
+                                    onConfirm={() =>
+                                        this.confirmLinkToConstituency(
+                                            history,
+                                            data.id,
+                                            constituency.id
+                                        )
+                                    }
                                 />
                             ))}
                         </ScrollableColumn>
@@ -229,15 +258,29 @@ function SuggestedConstituency(props) {
     const suggestion = props.suggestion;
 
     return (
-        <ListItem>
+        <ListItem className="space-between">
             <div>
-                <ItemTitle>{suggestion.name}</ItemTitle>
+                <ItemTitle>
+                    <TaggedRow content={suggestion.name}>
+                        <TagLink href={suggestion.url}>{suggestion.id}</TagLink>
+                    </TaggedRow>
+                </ItemTitle>
                 <ItemContent>
                     <DateRange start={suggestion.start} end={suggestion.end} />
                 </ItemContent>
             </div>
+            <ConfirmConstituencyAction onClick={props.onConfirm} />
         </ListItem>
     );
 }
 
-export { UnlinkedConstituencies, UnlinkedConstituencyDetail };
+function ConfirmConstituencyAction(props) {
+    return (
+        <div className="action-icon" onClick={props.onClick}>
+            <MaterialIcon icon={Icon.confirmConstituency} />
+        </div>
+    );
+}
+
+export default withRouter(UnlinkedConstituencyDetail);
+export { UnlinkedConstituencies };

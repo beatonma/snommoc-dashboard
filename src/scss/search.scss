@@ -29,6 +29,7 @@ $searchbar-width: 80%;
 
 .search-bar-span {
     @include icons.content-trailing-icon;
+    padding: 12px;
 }
 
 .search-bar,
@@ -40,11 +41,9 @@ $searchbar-width: 80%;
 }
 
 .action-close-search {
-    cursor: pointer;
-    padding: 16px;
-    margin-left: auto;
-    margin-right: 0;
-    width: fit-content;
+    @extend .action-icon;
+    padding-right: 16px;
+    padding-left: 16px;
     color: color.$text-dark;
 }
 

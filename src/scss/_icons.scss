@@ -1,7 +1,30 @@
+@use 'color';
+@use 'animation';
+
 @mixin content-trailing-icon {
     width: calc(100% - 128px);
 }
 
+.clickable {
+    color: color.$accent;
+}
+
 .trailing-icon {
     padding: 8px;
+    width: fit-content;
+    color: color.$text;
+    width: 24px;
+    height: 24px;
+}
+
+.action-icon {
+    @extend .trailing-icon;
+    @include animation.animated-background;
+    cursor: pointer;
+    color: color.$accent;
+    border-radius: 50%;
+}
+
+.action-icon:hover {
+    background: color.$hover-light;
 }

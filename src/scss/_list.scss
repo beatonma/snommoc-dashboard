@@ -1,3 +1,4 @@
+@use 'animation';
 @use 'color';
 
 .list {
@@ -11,16 +12,16 @@
 }
 
 .list-item {
+    @include animation.animated-background;
     padding: 6px 4px;
     background-color: color.$table;
-    transition: background-color 180ms ease;
     display: flex;
     align-items: center;
     cursor: default;
 }
 
 .list-item:hover {
-    background-color: adjust-color($color: color.$table, $lightness: -5%);
+    background-color: color.$hover;
 }
 
 .item-content {

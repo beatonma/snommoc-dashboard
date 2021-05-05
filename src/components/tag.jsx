@@ -9,6 +9,14 @@ function Tag(props) {
     );
 }
 
+function TagLink(props) {
+    return (
+        <a className={extendedClassname("tag", props)} href={props.href}>
+            {props.children}
+        </a>
+    );
+}
+
 function TODO(props) {
     return <Tag className="todo">TODO {props.children}</Tag>;
 }
@@ -29,4 +37,4 @@ function TaggedRow(props) {
     );
 }
 
-export { Tag, TaggedRow, TODO };
+export { Tag, TagLink, TaggedRow, TODO };

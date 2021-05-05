@@ -13,6 +13,10 @@ $text-invert: $text-dark;
 $text-invert-secondary: $text-dark-secondary;
 $text-invert-tertiary: $text-dark-tertiary;
 
+$hover-dark: rgba(0, 0, 0, 0.09);
+$hover-light: rgba(255, 255, 255, 0.09);
+$hover: $hover-dark;
+
 $accent: #3694c8;
 $accent-secondary: #60b4e377;
 $onAccent: $text;

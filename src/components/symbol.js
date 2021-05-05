@@ -13,6 +13,7 @@ const Icon = {
     close: "close",
     error: "error_outline",
     pending: "pending",
+    confirmConstituency: "add_link",
 };
 
 function MaterialIcon(props) {

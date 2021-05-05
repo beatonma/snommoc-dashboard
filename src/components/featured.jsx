@@ -46,7 +46,6 @@ function SocialIcon() {
             icon={Icon.trending}
         />
     );
-    // return <span title='Trending' className='trailing-icon material-icons'>whatshot</span>;
 }
 
 /**

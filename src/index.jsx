@@ -2,16 +2,15 @@ import React from "react";
 import ReactDom from "react-dom";
 import "./scss/dashboard.scss";
 import SearchForm from "./search";
-import {
+import UnlinkedConstituencyDetail, {
     UnlinkedConstituencies,
-    UnlinkedConstituencyDetail,
 } from "./unlinked-constituencies";
 import Zeitgeist from "./zeitgeist";
 import Urls from "./local/local";
-import { getCsrfToken } from "./util/cookies";
 import RecentTasks from "./tasks";
 import { Error, InlineError } from "./components/error";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { requestConfig } from "./util/actions";
 
 function DashbaordApp() {
     ReactDom.render(<DashboardRouter />, document.getElementById("dashboard"));
@@ -68,13 +67,7 @@ class Dashboard extends React.Component {
     toggleFeatured(targetType, targetId, isFeatured) {
         const url = Urls.actions.toggleFeatured(targetType, targetId);
         const requestType = isFeatured ? "DELETE" : "POST";
-        const config = {
-            method: requestType,
-            headers: {
-                "Content-Type": "x-www-form-urlencoded",
-                "X-CSRFToken": getCsrfToken(),
-            },
-        };
+        const config = requestConfig(requestType);
 
         fetch(url, config)
             .then(response => this.refreshZeitgeist())

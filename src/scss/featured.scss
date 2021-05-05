@@ -6,7 +6,5 @@
 }
 
 .featured-icon {
-    @extend .trailing-icon;
-    color: color.$accent;
-    cursor: pointer;
+    @extend .action-icon;
 }

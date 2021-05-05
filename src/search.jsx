@@ -118,6 +118,16 @@ class SearchForm extends React.Component {
             <NoContent />
         );
 
+        const closeSearchAction = this.state.query ? (
+            <MaterialIcon
+                icon={Icon.close}
+                onClick={this.onBlur}
+                className="action-close-search"
+            />
+        ) : (
+            <NoContent />
+        );
+
         return (
             <div>
                 {error}
@@ -134,11 +144,7 @@ class SearchForm extends React.Component {
                             />
                         </span>
                         {rawLink}
-                        <MaterialIcon
-                            icon={Icon.close}
-                            onClick={this.onBlur}
-                            className="action-close-search"
-                        />
+                        {closeSearchAction}
                     </div>
 
                     {searchResultsBlock}
