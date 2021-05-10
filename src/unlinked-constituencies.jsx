@@ -10,7 +10,7 @@ import {
 } from "./components/list";
 import Section from "./components/section";
 import { Icon, MaterialIcon } from "./components/symbol";
-import { TaggedRow, TagLink, TODO } from "./components/tag";
+import { TaggedRow, TagLink } from "./components/tag";
 import { Spotlight } from "./focussed";
 import Urls from "./local/local.js";
 import { requestConfig } from "./util/actions";
@@ -75,8 +75,7 @@ class UnlinkedConstituencies extends React.Component {
                 error={this.state.error}
                 networkError={this.state.networkError}
             >
-                <TODO />
-                <div className="unlinked-constituencies list-scroll">
+                <ScrollableColumn className="unlinked-constituencies">
                     {this.state.results.map(item => (
                         <UnlinkedConstituency
                             key={item.id}
@@ -88,7 +87,7 @@ class UnlinkedConstituencies extends React.Component {
                             onClick={() => this.props.onItemFocus(item)}
                         />
                     ))}
-                </div>
+                </ScrollableColumn>
             </Section>
         );
     }

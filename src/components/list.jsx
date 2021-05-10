@@ -3,11 +3,17 @@ import { extendedClassname } from "../util/elements";
 import NoContent from "./empty";
 
 function ScrollableColumn(props) {
-    return (
-        <div className={extendedClassname("list-scroll", props)}>
-            {props.children}
-        </div>
-    );
+    const hasChildren = React.Children.count(props.children) > 0;
+
+    if (hasChildren) {
+        return (
+            <div className={extendedClassname("list-scroll", props)}>
+                {props.children}
+            </div>
+        );
+    } else {
+        return <NoContent message="No items" />;
+    }
 }
 
 function ListItem(props) {
