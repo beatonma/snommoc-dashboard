@@ -1,4 +1,5 @@
 import React from "react";
+import { ConfirmButton } from "./components/button";
 import { DateTime } from "./components/datetime";
 import NoContent from "./components/empty";
 import { ListItem, ScrollableColumn } from "./components/list";
@@ -7,7 +8,40 @@ import { Icon, MaterialIcon } from "./components/symbol";
 import Urls from "./local/local";
 import "./scss/tasks.scss";
 
+/**
+ * Display buttons that trigger a task to run manually.
+ */
+export function CreateTaskActions(props) {
+    return (
+        <Section title="Actions">
+            <div className="buttons">
+                <ConfirmButton onClick={props.updateProfiles}>
+                    <span>Update profiles</span>
+                </ConfirmButton>
 
+                <ConfirmButton onClick={props.updatePortraits}>
+                    <span>Update portrait photos</span>
+                </ConfirmButton>
+
+                <ConfirmButton onClick={props.updateBills}>
+                    <span>Update bills</span>
+                </ConfirmButton>
+
+                <ConfirmButton onClick={props.updateDivisions}>
+                    <span>Update divisions</span>
+                </ConfirmButton>
+
+                <ConfirmButton onClick={props.updateElectionResults}>
+                    <span>Update election results</span>
+                </ConfirmButton>
+            </div>
+        </Section>
+    );
+}
+
+/**
+ * Display recent notifications from tasks.
+ */
 class RecentTasks extends React.Component {
     constructor(props) {
         super(props);
@@ -67,14 +101,19 @@ function Task(props) {
 
     const cleanTaskTitle = title =>
         title.replace("[Finished] ", "").replace("[Failed] ", "");
-    const cleanTaskContent = content =>
-        content
-            ? "<p>" +
-              content
-                  ?.replace(/(?:\r\n|\r|\n)/g, "</p><p>")
-                  ?.replace(/[\"\']{1}([^\s]+?)[\"\']{1}/g, "<code>$1</code>") +
-              "</p>"
-            : null;
+
+    const cleanTaskContent = content => {
+        if (content?.replace(/(?:\r\n|\r|\n)/g, "")) {
+            // If removing whitespace results in usable text, apply formatting.
+            const clean = content
+                ?.replace(/(?:\r\n|\r|\n)/g, "</p><p>")
+                ?.replace(/[\"\']{1}([^\s]+?)[\"\']{1}/g, "<code>$1</code>");
+
+            return clean ? `<p>${clean}</p>` : null;
+        }
+
+        return null;
+    };
 
     return (
         <ListItem className={`task ${statusClass}`}>

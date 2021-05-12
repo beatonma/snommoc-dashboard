@@ -18,8 +18,9 @@ $hover-light: rgba(255, 255, 255, 0.09);
 $hover: $hover-dark;
 
 $accent: #3694c8;
-$accent-secondary: #60b4e377;
+$accent-secondary: #347498;
 $onAccent: $text;
+$accent-hover: #4690b9;
 
 $selected: #aaaaaa88;
 
@@ -37,5 +38,18 @@ $table-border: $text-light-tertiary;
 $code: #444444;
 $onCodet: $text-light;
 
-$warn: #f44336;
-$onWarn: $text-light;
+$positive: #36f443;
+$positive-hover: #5bec65;
+$onPositive: $text-dark;
+
+$negative: #f44336;
+$negative-hover: #df2e20;
+$onNegative: $text-light;
+
+$warn: #ebd404;
+$onWarn: $text-dark;
+$warn-hover: #eede5c;
+
+$error: $negative;
+$error-hover: $negative-hover;
+$onError: $onNegative;

@@ -1,0 +1,69 @@
+@use 'color';
+@use 'animation';
+@use 'alignment';
+
+$radius: 4px;
+
+.button {
+    @include animation.animated-color;
+    width: max-content;
+    background-color: color.$accent-secondary;
+    color: color.$onAccent;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: $radius;
+    text-align: center;
+    font-family: monospace;
+}
+
+.buttons {
+    @extend .row;
+}
+
+.button:hover {
+    background: color.$accent-hover;
+}
+
+.confirm-button {
+    @extend .button;
+    margin-right: 4px;
+    display: block;
+    position: relative;
+    padding: 16px;
+    margin: 8px;
+}
+
+.confirm-button.unlocked {
+    background-color: color.$negative;
+    color: color.$onNegative;
+}
+
+.button.disabled {
+    cursor: not-allowed;
+    background-color: color.$text-dark-tertiary;
+    color: color.$text-light-tertiary;
+}
+
+.confirm-button--confirm {
+    font-size: smaller;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: color.$onWarn;
+    background-color: change-color($color: color.$warn, $alpha: 0.8);
+    border-radius: $radius;
+    font-weight: bolder;
+}
+
+.confirm-button--confirm * {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+}

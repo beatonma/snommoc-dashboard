@@ -7,7 +7,7 @@ import UnlinkedConstituencyDetail, {
 } from "./unlinked-constituencies";
 import Zeitgeist from "./zeitgeist";
 import Urls from "./local/local";
-import RecentTasks from "./tasks";
+import RecentTasks, { CreateTaskActions } from "./tasks";
 import { Error, InlineError } from "./components/error";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { requestConfig } from "./util/actions";
@@ -44,6 +44,7 @@ class Dashboard extends React.Component {
 
         this.refreshZeitgeist = this.refreshZeitgeist.bind(this);
         this.toggleFeatured = this.toggleFeatured.bind(this);
+        this.startTask = this.startTask.bind(this);
 
         this.refreshZeitgeist();
     }
@@ -74,6 +75,12 @@ class Dashboard extends React.Component {
             .catch(err => this.setState({ networkError: err }));
     }
 
+    startTask(url) {
+        fetch(url, requestConfig("POST"))
+            .then(response => console.log(url))
+            .catch(err => this.setState({ networkError: err }));
+    }
+
     render() {
         let content;
 
@@ -86,6 +93,25 @@ class Dashboard extends React.Component {
         } else {
             content = (
                 <div>
+                    <CreateTaskActions
+                        updateProfiles={() =>
+                            this.startTask(Urls.actions.tasks.update_profiles)
+                        }
+                        updatePortraits={() =>
+                            this.startTask(Urls.actions.tasks.update_portraits)
+                        }
+                        updateBills={() =>
+                            this.startTask(Urls.actions.tasks.update_bills)
+                        }
+                        updateDivisions={() =>
+                            this.startTask(Urls.actions.tasks.update_divisions)
+                        }
+                        updateElectionResults={() =>
+                            this.startTask(
+                                Urls.actions.tasks.update_election_results
+                            )
+                        }
+                    />
                     <UnlinkedConstituencies />
                     <RecentTasks />
                     <Zeitgeist

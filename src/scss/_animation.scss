@@ -1,3 +1,5 @@
-@mixin animated-background {
-    transition: background 300ms ease;
+$t: 300ms;
+
+@mixin animated-color {
+    transition: background-color $t, color $t ease;
 }

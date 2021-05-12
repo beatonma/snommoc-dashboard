@@ -19,7 +19,7 @@
 
 .action-icon {
     @extend .trailing-icon;
-    @include animation.animated-background;
+    @include animation.animated-color;
     cursor: pointer;
     color: color.$accent;
     border-radius: 50%;
