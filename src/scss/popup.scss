@@ -1,0 +1,27 @@
+@use 'color';
+
+.overlay {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10000;
+    background-color: color.$overlay;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.popup {
+    margin: 32px;
+    padding: 16px;
+    background-color: color.$surface;
+    color: color.$onSurface;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 8px;
+    font-size: larger;
+}

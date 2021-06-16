@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Icon, MaterialIcon, Symbol } from "./components/symbol";
 import { TaggedRow } from "./components/tag";
 import { ScrollableColumn } from "./components/list";
@@ -23,138 +23,93 @@ import { DateRange, DateTime } from "./components/datetime";
  * }
  */
 
-class SearchForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            query: "",
-            results: {},
-            showResults: true,
-            toggleFeatured: (targetType, targetId, isFeatured) => {
-                props.toggleFeatured(targetType, targetId, isFeatured);
-                this.handleSubmit(this.state.query);
-            },
-            error: null,
-            networkError: null,
-        };
+function SearchForm(props) {
+    const [query, setQuery] = useState("");
+    const [results, setResults] = useState([]);
+    const [showResults, setShowResults] = useState(false);
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.onFocus = this.onFocus.bind(this);
-        this.onBlur = this.onBlur.bind(this);
-    }
-
-    static getDerivedStateFromError(error) {
-        return { error: error };
-    }
-
-    componentDidCatch(error, errorInfo) {
-        console.error(error);
-        console.error(errorInfo);
-    }
-
-    handleChange(event) {
-        this.setState({ query: event.target.value });
-        this.handleSubmit(event.target.value);
-    }
-
-    handleSubmit(query) {
+    const submitQuery = query => {
         if (query.length == 0) {
-            this.setResults({});
+            setResults([]);
             return;
         }
 
         fetch(Urls.actions.search(query))
             .then(response => response.json())
-            .then(data => this.setResults(data))
-            .catch(err => this.setState({ networkError: err }));
-    }
+            .then(data => setResults(data));
+    };
 
-    onFocus() {
-        this.setState({ showResults: true });
-    }
+    const toggleFeatured = (targetType, targetId, isFeatured) => {
+        props.toggleFeatured(targetType, targetId, isFeatured);
+        submitQuery(query);
+    };
 
-    onBlur() {
-        this.setState({
-            query: "",
-            results: {},
-        });
-        window.focus();
-    }
+    const onValueChange = event => {
+        const q = event.target.value;
+        setQuery(q);
+        submitQuery(q);
+    };
 
-    setResults(value) {
-        this.setState({ results: value });
-    }
+    return (
+        <div>
+            <form
+                onSubmit={event => event.preventDefault()}
+                className="search-form"
+            >
+                <div className="search-bar-wrapper">
+                    <span className="search-bar-span">
+                        <input
+                            className="search-bar"
+                            placeholder={`Search${Symbol.ellips}`}
+                            type="text"
+                            value={query}
+                            onChange={onValueChange}
+                            onFocus={() => setShowResults(true)}
+                        />
+                    </span>
 
-    render() {
-        const error = this.state.error ? (
-            <Error message={this.state.error} />
-        ) : (
-            <NoContent />
-        );
+                    <RawLink query={query} />
+                    <CloseButton
+                        query={query}
+                        onBlur={() => setShowResults(false)}
+                    />
+                </div>
 
-        function onSubmit(event) {
-            event.preventDefault();
-            this.handleSubmit(this.state.query);
-        }
-
-        let searchResultsBlock;
-        if (this.state.showResults) {
-            searchResultsBlock = (
                 <SearchResults
-                    results={this.state.results}
-                    onToggleFeatured={this.state.toggleFeatured}
+                    results={results}
+                    onToggleFeatured={toggleFeatured}
+                    visible={showResults}
                 />
-            );
-        } else {
-            searchResultsBlock = <NoContent />;
-        }
+            </form>
+        </div>
+    );
+}
 
-        const rawLink = this.state.query ? (
-            <span className="raw">
-                [<a href={Urls.actions.search(this.state.query)}>raw</a>]
-            </span>
-        ) : (
-            <NoContent />
-        );
+function RawLink(props) {
+    return props.query ? (
+        <span className="raw">
+            [<a href={Urls.actions.search(props.query)}>raw</a>]
+        </span>
+    ) : (
+        <NoContent />
+    );
+}
 
-        const closeSearchAction = this.state.query ? (
-            <MaterialIcon
-                icon={Icon.close}
-                onClick={this.onBlur}
-                className="action-close-search"
-            />
-        ) : (
-            <NoContent />
-        );
-
-        return (
-            <div>
-                {error}
-                <form onSubmit={onSubmit} className="search-form">
-                    <div className="search-bar-wrapper">
-                        <span className="search-bar-span">
-                            <input
-                                className="search-bar"
-                                placeholder={`Search${Symbol.ellips}`}
-                                type="text"
-                                value={this.state.query}
-                                onChange={this.handleChange}
-                                onFocus={this.onFocus}
-                            />
-                        </span>
-                        {rawLink}
-                        {closeSearchAction}
-                    </div>
-
-                    {searchResultsBlock}
-                </form>
-            </div>
-        );
-    }
+function CloseButton(props) {
+    return props.query ? (
+        <MaterialIcon
+            icon={Icon.close}
+            onClick={props.onBlur}
+            className="action-close-search"
+        />
+    ) : (
+        <NoContent />
+    );
 }
 
 function SearchResults(props) {
+    if (!props.visible) return <NoContent />;
+
     const results = props.results;
 
     if (Object.keys(results).length == 0) {

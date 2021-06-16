@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ConfirmButton } from "./components/button";
 import { DateTime } from "./components/datetime";
 import NoContent from "./components/empty";
 import { ListItem, ScrollableColumn } from "./components/list";
+import { Popup } from "./components/popus";
+import { Tag } from "./components/tag";
 import Section from "./components/section";
 import { Icon, MaterialIcon } from "./components/symbol";
 import Urls from "./local/local";
+import { extendedClassname } from "./util/elements";
 import "./scss/tasks.scss";
 
 /**
@@ -42,53 +45,66 @@ export function CreateTaskActions(props) {
 /**
  * Display recent notifications from tasks.
  */
-class RecentTasks extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tasks: [],
-            error: null,
-            networkError: null,
-        };
 
-        this.update();
-    }
+function RecentTasks() {
+    const [tasks, setTasks] = useState([]);
+    const [focussed, setFocussed] = useState(null);
 
-    static getDerivedStateFromError(error) {
-        return { error: error };
-    }
-
-    componentDidCatch(error, errorInfo) {
-        console.error(error);
-        console.error(errorInfo);
-    }
-
-    update() {
+    useEffect(() => {
         fetch(Urls.tasks)
             .then(response => response.json())
             .then(json => json.results)
-            .then(tasks => this.setState({ tasks: tasks }))
-            .catch(err => this.setState({ networkError: err }));
-    }
+            .then(tasks => setTasks(tasks));
+    }, []);
 
-    render() {
-        return (
-            <Section
-                title="Recent tasks"
-                url={Urls.tasks}
-                error={this.state.error}
-                networkError={this.state.networkError}
-            >
-                <div className="recent-tasks">
-                    <ScrollableColumn>
-                        {this.state.tasks.map(task => (
-                            <Task key={task.created_on} task={task} />
-                        ))}
-                    </ScrollableColumn>
-                </div>
-            </Section>
-        );
-    }
+    const onItemClick = task => {
+        setFocussed(task);
+    };
+
+    return (
+        <Section title="Recent tasks" url={Urls.tasks}>
+            <div className="recent-tasks">
+                <ScrollableColumn>
+                    {tasks.map(task => (
+                        <TaskListItem
+                            key={task.created_on}
+                            task={task}
+                            onItemClick={onItemClick}
+                        />
+                    ))}
+                </ScrollableColumn>
+            </div>
+            <FocussedTask task={focussed} onClose={() => setFocussed(null)} />
+        </Section>
+    );
+}
+
+function FocussedTask(props) {
+    if (props.task == null) return <NoContent />;
+    return (
+        <Popup {...props}>
+            <Task task={props.task} />
+        </Popup>
+    );
+}
+
+function TaskListItem(props) {
+    const task = props.task;
+
+    let statusClass;
+    if (task.failed) statusClass = "failed";
+    else if (task.complete) statusClass = "complete";
+    else statusClass = "ongoing";
+
+    return (
+        <ListItem
+            className={`task ${statusClass}`}
+            onClick={() => props.onItemClick(task)}
+        >
+            <StatusIcon task={task} />
+            <Task {...props} className="space-between" showContent={false} />
+        </ListItem>
+    );
 }
 
 function Task(props) {
@@ -99,44 +115,48 @@ function Task(props) {
     else if (task.complete) statusClass = "complete";
     else statusClass = "ongoing";
 
-    const cleanTaskTitle = title =>
-        title.replace("[Finished] ", "").replace("[Failed] ", "");
-
-    const cleanTaskContent = content => {
-        if (content?.replace(/(?:\r\n|\r|\n)/g, "")) {
-            // If removing whitespace results in usable text, apply formatting.
-            const clean = content
-                ?.replace(/(?:\r\n|\r|\n)/g, "</p><p>")
-                ?.replace(/[\"\']{1}([^\s]+?)[\"\']{1}/g, "<code>$1</code>");
-
-            return clean ? `<p>${clean}</p>` : null;
-        }
-
-        return null;
-    };
+    const showContent = props.showContent !== false;
+    const content = showContent ? (
+        <div
+            className="task-content"
+            dangerouslySetInnerHTML={{
+                __html: cleanTaskContent(task.content),
+            }}
+        ></div>
+    ) : (
+        <NoContent />
+    );
 
     return (
-        <ListItem className={`task ${statusClass}`}>
-            <StatusIcon task={task} />
-            <div className="space-between">
-                <div>
-                    <div className="task-title">
-                        {cleanTaskTitle(task.title)}
-                    </div>
-                    <div
-                        className="task-content"
-                        dangerouslySetInnerHTML={{
-                            __html: cleanTaskContent(task.content),
-                        }}
-                    ></div>
+        <div className={extendedClassname("", props)}>
+            <div>
+                <div className="task-title">
+                    {cleanTaskTitle(task.title)} <TaskWarningsTag task={task} />
                 </div>
-                <TimeStamp
-                    started={task.created_on}
-                    finished={task.finished_at}
-                />
+                {content}
             </div>
-        </ListItem>
+            <TimeStamp started={task.created_on} finished={task.finished_at} />
+        </div>
     );
+}
+
+function TaskWarningsTag(props) {
+    const task = props.task;
+    if (task === null) return <NoContent />;
+
+    const warningsCount = ((task.content || "").match(/\[warning\]/g) || [])
+        .length;
+
+    let warningsMessage;
+    if (warningsCount == 0) {
+        return <NoContent />;
+    } else if (warningsCount == 1) {
+        warningsMessage = "1 warning";
+    } else {
+        warningsMessage = `${warningsCount} warnings`;
+    }
+
+    return <Tag className="warning">{warningsMessage}</Tag>;
 }
 
 function TimeStamp(props) {
@@ -197,3 +217,19 @@ function StatusIcon(props) {
 }
 
 export default RecentTasks;
+
+const cleanTaskTitle = title =>
+    title.replace("[Finished] ", "").replace("[Failed] ", "");
+
+const cleanTaskContent = content => {
+    if (content?.replace(/(?:\r\n|\r|\n)/g, "")) {
+        // If removing whitespace results in usable text, apply formatting.
+        const clean = content
+            ?.replace(/(?:\r\n|\r|\n)/g, "</p><p>")
+            ?.replace(/[\"\']{1}([^\s]+?)[\"\']{1}/g, "<code>$1</code>")
+            ?.replace(/(https:\/\/[^\s\[\]\(\)\<\>]+)/g, '<a href="$&">$&</a>');
+        return clean ? `<p>${clean}</p>` : null;
+    }
+
+    return null;
+};

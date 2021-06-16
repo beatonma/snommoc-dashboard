@@ -5,10 +5,7 @@
     "private": true,
     "scripts": {
         "build": "webpack --mode=production",
-        "build:dev": "webpack --mode=development",
-        "build:prod": "webpack --mode=production",
-        "watch": "webpack --watch",
-        "serve": "webpack serve"
+        "watch": "webpack --watch --mode=development"
     },
     "devDependencies": {
         "@babel/core": "^7.13.16",

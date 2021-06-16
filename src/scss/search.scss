@@ -8,9 +8,10 @@ $searchbar-width: 80%;
 
 .search-results {
     @extend .list;
+    z-index: 1000;
     position: absolute;
     width: $searchbar-width;
-    font-size: small;
+    font-size: smaller;
 }
 
 .search-form {
