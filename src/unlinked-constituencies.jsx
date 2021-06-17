@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, withRouter } from "react-router";
 import { DateOnly, DateRange } from "./components/datetime";
 import NoContent from "./components/empty";
@@ -37,60 +37,38 @@ import { requestConfig } from "./util/actions";
  * }
  */
 
-class UnlinkedConstituencies extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            results: [],
-            error: null,
-            networkError: null,
-        };
+export function UnlinkedConstituencies(props) {
+    const [results, setResults] = useState([]);
 
-        this.update = this.update.bind(this);
-        this.update();
-    }
-
-    static getDerivedStateFromError(error) {
-        return { error: error };
-    }
-
-    componentDidCatch(error, errorInfo) {
-        console.error(error);
-        console.error(errorInfo);
-    }
-
-    update() {
+    useEffect(() => {
         fetch(Urls.unlinkedConstituencies)
             .then(response => response.json())
             .then(json => json.results)
-            .then(results => this.setState({ results: results }))
-            .catch(err => this.setState({ networkError: err }));
-    }
+            .then(results => setResults(results));
+    }, []);
 
-    render() {
-        return (
-            <Section
-                title="Unlinked Constituencies"
-                url={Urls.unlinkedConstituencies}
-                error={this.state.error}
-                networkError={this.state.networkError}
-            >
-                <ScrollableColumn className="unlinked-constituencies">
-                    {this.state.results.map(item => (
-                        <UnlinkedConstituency
-                            key={item.id}
-                            id={item.id}
-                            name={item.name}
-                            url={item.url}
-                            person={item.person}
-                            election={item.election}
-                            onClick={() => this.props.onItemFocus(item)}
-                        />
-                    ))}
-                </ScrollableColumn>
-            </Section>
-        );
-    }
+    if (results.length == 0) return <NoContent />;
+
+    return (
+        <Section
+            title="Unlinked Constituencies"
+            url={Urls.unlinkedConstituencies}
+        >
+            <ScrollableColumn className="unlinked-constituencies">
+                {results.map(item => (
+                    <UnlinkedConstituency
+                        key={item.id}
+                        id={item.id}
+                        name={item.name}
+                        url={item.url}
+                        person={item.person}
+                        election={item.election}
+                        onClick={() => props.onItemFocus(item)}
+                    />
+                ))}
+            </ScrollableColumn>
+        </Section>
+    );
 }
 
 function UnlinkedConstituency(props) {
@@ -151,106 +129,71 @@ function UnlinkedConstituency(props) {
  *     ]
  * }
  */
-class UnlinkedConstituencyDetail extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            id: props.id,
-            data: null,
-            error: null,
-            networkError: null,
-        };
 
-        this.update = this.update.bind(this);
-        this.update();
+function UnlinkedConstituencyDetail(props) {
+    const [data, setData] = useState(null);
 
-        this.confirmLinkToConstituency = this.confirmLinkToConstituency.bind(
-            this
-        );
-    }
-
-    static getDerivedStateFromError(error) {
-        return { error: error };
-    }
-
-    componentDidCatch(error, errorInfo) {
-        console.error(error);
-        console.error(errorInfo);
-    }
-
-    update() {
-        fetch(Urls.unlinkedConstituency(this.state.id))
+    useEffect(() => {
+        fetch(Urls.unlinkedConstituency(props.id))
             .then(response => response.json())
-            .then(data => this.setState({ data: data }))
-            .catch(err => this.setState({ networkError: err }));
-    }
+            .then(detail => setData(detail));
+    }, []);
 
-    confirmLinkToConstituency(history, unlinkedID, constituencyID) {
+    const confirmLinkToConstituency = (history, unlinkedID, constituencyID) => {
         const config = requestConfig("POST");
 
         fetch(
             Urls.actions.confirmConstituency(unlinkedID, constituencyID),
             config
-        )
-            .then(response => {
-                if (response.status < 300) {
-                    history.push(Urls.dashboardHome);
-                }
-            })
-            .catch(err => this.setState({ networkError: err }));
+        ).then(response => {
+            if (response.status < 300) {
+                history.push(Urls.dashboardHome);
+            }
+        });
+    };
+
+    if (!data) {
+        return <NoContent />;
     }
 
-    render() {
-        const data = this.state.data;
+    const history = props.history;
+    const suggestions = data.suggestions.sort((a, b) => b.score - a.score);
 
-        if (!data) {
-            return <NoContent />;
-        }
-
-        const history = this.props.history;
-        const suggestions = data.suggestions.sort((a, b) => b.score - a.score);
-
-        return (
-            <Spotlight>
-                <Section
-                    title="Unlinked Constituency"
-                    url={window.location.href}
-                    error={this.state.error}
-                    networkError={this.state.networkError}
-                >
-                    <div className="unlinked-constituency">
+    return (
+        <Spotlight>
+            <Section title="Unlinked Constituency" url={window.location.href}>
+                <div className="unlinked-constituency">
+                    <div>
+                        <h3>{data.name}</h3>
+                        <span>
+                            {data.election.name}:{" "}
+                            <DateOnly date={data.election.date} />
+                        </span>
                         <div>
-                            <h3>{data.name}</h3>
-                            <span>
-                                {data.election.name}:{" "}
-                                <DateOnly date={data.election.date} />
-                            </span>
-                            <div>
-                                <a href={data.person.url}>{data.person.name}</a>
-                            </div>
+                            <a href={data.person.url}>{data.person.name}</a>
                         </div>
-
-                        <h4>Suggested matches</h4>
-                        <ScrollableColumn>
-                            {suggestions.map(constituency => (
-                                <SuggestedConstituency
-                                    key={constituency.id}
-                                    suggestion={constituency}
-                                    onConfirm={() =>
-                                        this.confirmLinkToConstituency(
-                                            history,
-                                            data.id,
-                                            constituency.id
-                                        )
-                                    }
-                                />
-                            ))}
-                        </ScrollableColumn>
                     </div>
-                </Section>
-            </Spotlight>
-        );
-    }
+
+                    <h4>Suggested matches</h4>
+                    <ScrollableColumn>
+                        {suggestions.map(constituency => (
+                            <SuggestedConstituency
+                                key={constituency.id}
+                                suggestion={constituency}
+                                onConfirm={() =>
+                                    confirmLinkToConstituency(
+                                        history,
+                                        data.id,
+                                        constituency.id
+                                    )
+                                }
+                            />
+                        ))}
+                    </ScrollableColumn>
+                </div>
+            </Section>
+        </Spotlight>
+    );
 }
 
 function SuggestedConstituency(props) {
@@ -282,4 +225,3 @@ function ConfirmConstituencyAction(props) {
 }
 
 export default withRouter(UnlinkedConstituencyDetail);
-export { UnlinkedConstituencies };
