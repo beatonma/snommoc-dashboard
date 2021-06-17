@@ -1,7 +1,7 @@
 @use 'color';
 
 .overlay {
-    position: absolute;
+    position: fixed;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -15,7 +15,7 @@
 }
 
 .popup {
-    margin: 32px;
+    margin: 32px auto;
     padding: 16px;
     background-color: color.$surface;
     color: color.$onSurface;

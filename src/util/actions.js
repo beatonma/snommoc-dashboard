@@ -9,3 +9,20 @@ export function requestConfig(method) {
         },
     };
 }
+
+function encodeData(data) {
+    return Object.keys(data)
+        .map(key => `${key}=${encodeURIComponent(data[key])}`)
+        .join("&");
+}
+
+export function postData(data) {
+    return {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": getCsrfToken(),
+        },
+        body: encodeData(data),
+    };
+}

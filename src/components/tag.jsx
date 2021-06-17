@@ -17,8 +17,8 @@ function TagLink(props) {
     );
 }
 
-function TODO(props) {
-    return <Tag className="todo">TODO {props.children}</Tag>;
+function ToDo(props) {
+    return <div className="todo">// TODO {props.children}</div>;
 }
 
 function TaggedRow(props) {
@@ -37,4 +37,4 @@ function TaggedRow(props) {
     );
 }
 
-export { Tag, TagLink, TaggedRow, TODO };
+export { Tag, TagLink, TaggedRow, ToDo };

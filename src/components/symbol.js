@@ -7,6 +7,7 @@ const Symbol = {
 
 const Icon = {
     check: "check",
+    home: "home",
     featured: "star",
     unfeatured: "star_border",
     trending: "whatshot",
@@ -14,6 +15,8 @@ const Icon = {
     error: "error_outline",
     pending: "pending",
     confirmConstituency: "add_link",
+    sortByName: "sort_by_alpha",
+    sortByMissingData: "link_off",
 };
 
 function MaterialIcon(props) {

@@ -5,6 +5,10 @@
     width: calc(100% - 128px);
 }
 
+.material-icons {
+    cursor: default;
+}
+
 .clickable {
     color: color.$accent;
 }

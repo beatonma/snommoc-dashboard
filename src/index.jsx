@@ -9,7 +9,7 @@ import Zeitgeist from "./zeitgeist";
 import Urls from "./local/local";
 import RecentTasks, { CreateTaskActions } from "./tasks";
 import { Error, InlineError } from "./components/error";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { requestConfig } from "./util/actions";
 import { ActiveMembers } from "./members";
 
@@ -31,7 +31,7 @@ function DashboardRouter() {
                 />
 
                 <Route
-                    path={Urls.activeMembers}
+                    path={Urls.dashboard("active-members")}
                     exact
                     component={ActiveMembers}
                 />
@@ -57,7 +57,7 @@ function Dashboard(props) {
         const requestType = isFeatured ? "DELETE" : "POST";
         const config = requestConfig(requestType);
 
-        fetch(url, config).then(response => refresh());
+        fetch(url, config).then(refresh);
     };
 
     const startTask = url =>
@@ -73,6 +73,7 @@ function Dashboard(props) {
     } else {
         content = (
             <div>
+                <Links />
                 <CreateTaskActions
                     updateProfiles={() =>
                         startTask(Urls.actions.tasks.update_profiles)
@@ -120,6 +121,14 @@ function DashboardChrome(props) {
             <SearchForm toggleFeatured={props.toggleFeatured} />
             <InlineError message={props.networkError} />
             {props.children}
+        </div>
+    );
+}
+
+function Links(props) {
+    return (
+        <div>
+            <Link to={Urls.dashboard("active-members")}>Active Members</Link>
         </div>
     );
 }

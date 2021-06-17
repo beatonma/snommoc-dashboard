@@ -50,8 +50,19 @@ function SearchForm(props) {
         submitQuery(q);
     };
 
+    const onSearchLosesFocus = e => {
+        // Call onBlur only when focus has moved to somewhere outwith the Search component tree.
+        const currentTarget = e.currentTarget;
+
+        setTimeout(() => {
+            if (!currentTarget.contains(document.activeElement)) {
+                setShowResults(false);
+            }
+        }, 0);
+    };
+
     return (
-        <div>
+        <div onBlur={onSearchLosesFocus}>
             <form
                 onSubmit={event => event.preventDefault()}
                 className="search-form"

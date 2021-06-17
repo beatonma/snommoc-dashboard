@@ -2,7 +2,7 @@ import React from "react";
 import { extendedClassname } from "../util/elements";
 import NoContent from "./empty";
 
-function ScrollableColumn(props) {
+export function ScrollableColumn(props) {
     const hasChildren = React.Children.count(props.children) > 0;
 
     if (hasChildren) {
@@ -16,7 +16,7 @@ function ScrollableColumn(props) {
     }
 }
 
-function ListItem(props) {
+export function ListItem(props) {
     const icons = props.icons || <NoContent />;
     const content =
         props.title && props.content ? (
@@ -40,7 +40,7 @@ function ListItem(props) {
     );
 }
 
-function ItemTitle(props) {
+export function ItemTitle(props) {
     return (
         <div className={extendedClassname("item-title", props)}>
             {props.children}
@@ -48,12 +48,10 @@ function ItemTitle(props) {
     );
 }
 
-function ItemContent(props) {
+export function ItemContent(props) {
     return (
         <div className={extendedClassname("item-content", props)}>
             {props.children}
         </div>
     );
 }
-
-export { ScrollableColumn, ListItem, ItemTitle, ItemContent };
