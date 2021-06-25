@@ -187,13 +187,15 @@ function EditableWikipedia(props) {
                         value={wikiPage}
                         onChange={event => {
                             event.preventDefault();
-                            setValue(event.target.value.replace(" ", "_"));
+                            setValue(event.target.value.replaceAll(" ", "_"));
                         }}
                         onKeyDown={event => {
                             if (event.key == "Enter") {
                                 event.preventDefault();
                                 submit(
-                                    event.target.value.trim().replace(" ", "_")
+                                    event.target.value
+                                        .trim()
+                                        .replaceAll(" ", "_")
                                 );
                             }
                         }}
