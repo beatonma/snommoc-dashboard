@@ -2,6 +2,7 @@
 
 .member {
     cursor: default;
+    transition: margin 180ms, padding 180ms;
 }
 
 .member:hover {
@@ -18,7 +19,13 @@
 
 .wiki-icon {
     padding: 8px 16px;
-    cursor: pointer;
+}
+
+.wiki-preview {
+    display: block;
+    margin-left: auto;
+    right: 0;
+    border-radius: 16px;
 }
 
 .editing {
@@ -60,7 +67,7 @@ input {
     cursor: pointer;
 }
 
-a.action {
+.preview.action {
     background-color: color.$accent;
     color: color.$onAccent;
 }

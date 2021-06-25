@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import Urls from "./local/local";
 import { House } from "./components/house";
 import { Loading } from "./components/loading";
-import Urls from "./local/local";
 import { postData } from "./util/actions";
-import "./scss/members.scss";
-
 import { Icon, MaterialIcon } from "./components/symbol";
+import { Popup } from "./components/popus";
+import "./scss/members.scss";
+import NoContent from "./components/empty";
 
 const SortingOptions = {
     name: (a, b) => a.name.localeCompare(b.name),
@@ -58,33 +59,49 @@ function MemberListItem(props) {
     const member = props.member;
     const [editable, setEditable] = useState(false);
     const editableClass = editable ? "editing" : "";
+    const [focussedWikiPage, setFocussedWikiPage] = useState(null);
 
     const onLoseFocus = e => {
         const currentTarget = e.currentTarget;
         setTimeout(() => {
             if (!currentTarget.contains(document.activeElement)) {
                 setEditable(false);
+                setFocussedWikiPage(null);
             }
         }, 0);
     };
 
+    const onDirty = () => {
+        props.onDirty?.();
+        setFocussedWikiPage(null);
+        setEditable(false);
+    };
+
     return (
         <div
-            className={`member row space-between ${editableClass}`}
-            tabIndex={0}
+            className="member"
             onBlur={onLoseFocus}
+            tabIndex={0}
+            onClick={() => setEditable(true)}
         >
-            <div className="row">
-                <House house={member.house} />
-                <div className="member-name">{member.name}</div>
+            <div className={`member row space-between ${editableClass}`}>
+                <div className="row">
+                    <House house={member.house} />
+                    <div className="member-name">{member.name}</div>
+                </div>
+
+                <div className="row">
+                    <PortraitIcon hasPortrait={member.has_portrait} />
+                    <Wikipedia
+                        member={member}
+                        onDirty={onDirty}
+                        editable={editable}
+                        focusWiki={setFocussedWikiPage}
+                    />
+                </div>
             </div>
 
-            <Wikipedia
-                member={member}
-                onDirty={props.onDirty}
-                editable={editable}
-                setEditable={setEditable}
-            />
+            <WikipediaPreview url={focussedWikiPage} />
         </div>
     );
 }
@@ -92,14 +109,14 @@ function MemberListItem(props) {
 function Wikipedia(props) {
     const memberWiki = props.member.wikipedia;
 
-    const icon = memberWiki ? Icon.check : Icon.close;
+    const icon = memberWiki ? Icon.check : Icon.edit;
 
     if (props.editable) {
         return (
             <EditableWikipedia
                 member={props.member}
-                onClose={() => props.setEditable(false)}
                 onChanged={props.onDirty}
+                focusWiki={props.focusWiki}
             />
         );
     }
@@ -109,9 +126,25 @@ function Wikipedia(props) {
             <MaterialIcon
                 icon={icon}
                 className="wiki-icon"
-                onClick={() => props.setEditable(true)}
+                title={memberWiki ? memberWiki : "No registered wiki page"}
             />
         </div>
+    );
+}
+
+function WikipediaPreview(props) {
+    if (!props.url) {
+        return <NoContent />;
+    }
+
+    return (
+        <iframe
+            className="wiki-preview"
+            src={props.url}
+            sandbox=""
+            width="80%"
+            height={600}
+        />
     );
 }
 
@@ -132,45 +165,55 @@ function EditableWikipedia(props) {
             })
         ).then(response => {
             if (response.status == 204) {
-                props.onClose();
                 props.onChanged();
             }
         });
     };
 
+    useEffect(() => {
+        if (!member.wikipedia) {
+            props.focusWiki(wikiUrl(wikiPage));
+        }
+    }, []);
+
     return (
-        <div className="member-wikipedia editing row">
-            <form onSubmit={e => e.preventDefault()}>
-                <input
-                    autoFocus
-                    type="text"
-                    placeholder="e.g. John_Johnson_(Politician)"
-                    value={wikiPage}
-                    onChange={event => {
-                        event.preventDefault();
-                        setValue(event.target.value);
-                    }}
-                    onKeyDown={event => {
-                        if (event.key == "Enter") {
+        <div className="">
+            <div className="member-wikipedia editing row">
+                <form onSubmit={e => e.preventDefault()}>
+                    <input
+                        autoFocus
+                        type="text"
+                        placeholder="e.g. John_Johnson_(Politician)"
+                        value={wikiPage}
+                        onChange={event => {
                             event.preventDefault();
-                            submit(event.target.value);
-                        }
+                            setValue(event.target.value);
+                        }}
+                        onKeyDown={event => {
+                            if (event.key == "Enter") {
+                                event.preventDefault();
+                                submit(event.target.value);
+                            }
+                        }}
+                    />
+                </form>
+
+                <div
+                    className="action preview"
+                    onClick={() => props.focusWiki(wikiUrl(wikiPage))}
+                >
+                    try it
+                </div>
+
+                <div
+                    className="action"
+                    onClick={e => {
+                        e.preventDefault();
+                        submit(wikiPage);
                     }}
-                />
-            </form>
-
-            <a href={wikiUrl(wikiPage)} className="action" target="_blank">
-                try it
-            </a>
-
-            <div
-                className="action"
-                onClick={e => {
-                    e.preventDefault();
-                    submit(wikiPage);
-                }}
-            >
-                Confirm
+                >
+                    Confirm
+                </div>
             </div>
         </div>
     );
@@ -204,6 +247,17 @@ function FilterIcon(props) {
             onClick={() => props.setSortBy(props.name)}
             className={selectedClass}
             title={`Sort by ${props.name}`}
+        />
+    );
+}
+
+function PortraitIcon(props) {
+    const icon = props.hasPortrait ? Icon.portrait : Icon.portrait_missing;
+
+    return (
+        <MaterialIcon
+            icon={icon}
+            title={props.hasPortrait ? "Has portrait" : "No portrait"}
         />
     );
 }

@@ -1,3 +1,13 @@
 @use 'color';
 @use 'vars';
 @use 'common';
+
+::-webkit-scrollbar {
+    width: 8px;
+    background: color.$surface;
+}
+
+::-webkit-scrollbar-thumb {
+    background: color.$text-light-tertiary;
+    border-radius: 2px;
+}
