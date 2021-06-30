@@ -71,3 +71,13 @@ input {
     background-color: color.$accent;
     color: color.$onAccent;
 }
+
+.party {
+    font-size: smaller;
+    margin: 0 8px;
+}
+
+a,
+a:visited {
+    color: color.$text;
+}

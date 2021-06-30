@@ -87,7 +87,9 @@ function MemberListItem(props) {
             <div className={`member row space-between ${editableClass}`}>
                 <div className="row">
                     <House house={member.house} />
-                    <div className="member-name">{member.name}</div>
+                    <MemberName member={member} />
+                    {/* <div className="member-name">{member.name}</div> */}
+                    <Party party={member.party} />
                 </div>
 
                 <div className="row">
@@ -103,6 +105,18 @@ function MemberListItem(props) {
 
             <WikipediaPreview url={focussedWikiPage} />
         </div>
+    );
+}
+
+function MemberName(props) {
+    const member = props.member;
+    return (
+        <a
+            href={Urls.api(`member/${member.parliamentdotuk}/`)}
+            title={member.parliamentdotuk}
+        >
+            <div className="member-name">{member.name}</div>
+        </a>
     );
 }
 
@@ -264,4 +278,14 @@ function PortraitIcon(props) {
             title={props.hasPortrait ? "Has portrait" : "No portrait"}
         />
     );
+}
+
+function Party(props) {
+    const party = props.party;
+
+    if (!party) {
+        return <NoContent />;
+    }
+
+    return <div className="party">{party}</div>;
 }
