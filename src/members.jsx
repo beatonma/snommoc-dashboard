@@ -113,7 +113,7 @@ function MemberName(props) {
     return (
         <a
             href={Urls.api(`member/${member.parliamentdotuk}/`)}
-            title={member.parliamentdotuk}
+            title={`${member.simple_name} [${member.parliamentdotuk}]`}
         >
             <div className="member-name">{member.name}</div>
         </a>
