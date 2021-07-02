@@ -196,7 +196,9 @@ function EditableWikipedia(props) {
         if (member.wikipedia) return;
         else {
             findWikiPage(
-                member.name.replaceAll(" ", "_"),
+                member.name
+                    .replace(/^(Dr|Ms|Mr|Miss|Mrs) /, "")
+                    .replaceAll(" ", "_"),
                 resolvedPage => {
                     setWikiPage(resolvedPage);
                     props.focusWiki(wikiUrl(resolvedPage));
@@ -204,7 +206,7 @@ function EditableWikipedia(props) {
                 error => {
                     // Display search results page
                     props.focusWiki(
-                        `https://en.wikipedia.org/w/index.php?search=${member.name}&title=Special%3ASearch&fulltext=1&ns0=1`
+                        `https://en.wikipedia.org/w/index.php?search=${member.simple_name}&title=Special%3ASearch&fulltext=1&ns0=1`
                     );
                 }
             );
@@ -282,6 +284,8 @@ function findWikiPage(naiveName, onPageChange, onError) {
             }
         );
     }
+
+    console.log(naiveName);
 
     getWikiText(naiveName)
         .then(response => response.json())
