@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Urls from "./local/local";
+import Urls, { DefaultHeaders } from "./local/local";
 import { House } from "./components/house";
 import { Loading } from "./components/loading";
 import { postData } from "./util/actions";
 import { Icon, MaterialIcon } from "./components/symbol";
-import { Popup } from "./components/popus";
 import "./scss/members.scss";
 import NoContent from "./components/empty";
 
@@ -83,12 +82,12 @@ function MemberListItem(props) {
             onBlur={onLoseFocus}
             tabIndex={0}
             onClick={() => setEditable(true)}
+            id={member.name}
         >
             <div className={`member row space-between ${editableClass}`}>
                 <div className="row">
                     <House house={member.house} />
-                    <MemberName member={member} />
-                    {/* <div className="member-name">{member.name}</div> */}
+                    <MemberName member={member} editing={editable} />
                     <Party party={member.party} />
                 </div>
 
@@ -111,13 +110,24 @@ function MemberListItem(props) {
 function MemberName(props) {
     const member = props.member;
     return (
-        <a
-            href={Urls.api(`member/${member.parliamentdotuk}/`)}
-            title={`${member.simple_name} [${member.parliamentdotuk}]`}
-        >
-            <div className="member-name">{member.name}</div>
-        </a>
+        <div>
+            <a
+                href={Urls.api(`member/${member.parliamentdotuk}/`)}
+                title={`${member.simple_name} [${member.parliamentdotuk}]`}
+            >
+                <div className="member-name">{member.name}</div>
+            </a>
+
+            <SimpleMemberName member={member} visible={props.editing} />
+        </div>
     );
+}
+
+function SimpleMemberName(props) {
+    if (!props.visible) {
+        return <NoContent />;
+    }
+    return <div className="member-name-simple">{props.member.simple_name}</div>;
 }
 
 function Wikipedia(props) {
@@ -164,9 +174,7 @@ function WikipediaPreview(props) {
 
 function EditableWikipedia(props) {
     const member = props.member;
-    const [wikiPage, setValue] = useState(
-        member.wikipedia || member.name.replace(" ", "_")
-    );
+    const [wikiPage, setWikiPage] = useState(member.wikipedia || "");
 
     const wikiUrl = path => `https://en.wikipedia.org/wiki/${path}`;
     const submit = value => {
@@ -185,8 +193,21 @@ function EditableWikipedia(props) {
     };
 
     useEffect(() => {
-        if (!member.wikipedia) {
-            props.focusWiki(wikiUrl(wikiPage));
+        if (member.wikipedia) return;
+        else {
+            findWikiPage(
+                member.name.replaceAll(" ", "_"),
+                resolvedPage => {
+                    setWikiPage(resolvedPage);
+                    props.focusWiki(wikiUrl(resolvedPage));
+                },
+                error => {
+                    // Display search results page
+                    props.focusWiki(
+                        `https://en.wikipedia.org/w/index.php?search=${member.name}&title=Special%3ASearch&fulltext=1&ns0=1`
+                    );
+                }
+            );
         }
     }, []);
 
@@ -201,7 +222,9 @@ function EditableWikipedia(props) {
                         value={wikiPage}
                         onChange={event => {
                             event.preventDefault();
-                            setValue(event.target.value.replaceAll(" ", "_"));
+                            setWikiPage(
+                                event.target.value.replaceAll(" ", "_")
+                            );
                         }}
                         onKeyDown={event => {
                             if (event.key == "Enter") {
@@ -235,6 +258,48 @@ function EditableWikipedia(props) {
             </div>
         </div>
     );
+}
+
+/**
+ * Try to resolve a wiki page automatically.
+ */
+function findWikiPage(naiveName, onPageChange, onError) {
+    function getWikiText(pagename) {
+        return fetch(
+            "https://en.wikipedia.org/w/api.php?" +
+                new URLSearchParams({
+                    format: "json",
+                    action: "parse",
+                    prop: "wikitext",
+                    page: pagename,
+                    origin: "*",
+                }),
+            {
+                method: "GET",
+                headers: {
+                    ...DefaultHeaders,
+                },
+            }
+        );
+    }
+
+    getWikiText(naiveName)
+        .then(response => response.json())
+        .then(data => {
+            if ("error" in data) {
+                throw data["error"]["code"];
+            } else return data["parse"]["wikitext"]["*"];
+        })
+        .then(wikitext => {
+            const redirect = wikitext.match(/#REDIRECT \[\[([^\]]+)\]\]/);
+            if (redirect) {
+                return redirect[1];
+            }
+            return naiveName;
+        })
+        .then(result => result.replaceAll(" ", "_"))
+        .then(onPageChange)
+        .catch(onError);
 }
 
 function Filters(props) {

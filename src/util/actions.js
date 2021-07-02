@@ -1,4 +1,5 @@
 import { getCsrfToken } from "./cookies";
+import { DefaultHeaders } from "../local/local";
 
 export function requestConfig(method) {
     return {
@@ -6,6 +7,7 @@ export function requestConfig(method) {
         headers: {
             "Content-Type": "x-www-form-urlencoded",
             "X-CSRFToken": getCsrfToken(),
+            ...DefaultHeaders,
         },
     };
 }
@@ -22,6 +24,7 @@ export function postData(data) {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "X-CSRFToken": getCsrfToken(),
+            ...DefaultHeaders,
         },
         body: encodeData(data),
     };
