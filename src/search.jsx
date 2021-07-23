@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon, MaterialIcon, Symbol } from "./components/symbol";
 import { TaggedRow } from "./components/tag";
 import { ScrollableColumn } from "./components/list";
@@ -39,60 +39,66 @@ function SearchForm(props) {
             .then(data => setResults(data));
     };
 
-    const toggleFeatured = (targetType, targetId, isFeatured) => {
+    const toggleFeatured = (event, targetType, targetId, isFeatured) => {
         props.toggleFeatured(targetType, targetId, isFeatured);
         submitQuery(query);
     };
 
     const onValueChange = event => {
         const q = event.target.value;
+        setShowResults(true);
         setQuery(q);
         submitQuery(q);
     };
 
-    const onSearchLosesFocus = e => {
-        // Call onBlur only when focus has moved to somewhere outwith the Search component tree.
-        const currentTarget = e.currentTarget;
+    useEffect(() => {
+        const onBodyClick = () => {
+            console.log(`body click ${document.activeElement}`);
 
-        setTimeout(() => {
-            if (!currentTarget.contains(document.activeElement)) {
+            if (
+                !document
+                    .getElementById("search_form")
+                    ?.contains(document.activeElement)
+            ) {
                 setShowResults(false);
             }
-        }, 0);
-    };
+        };
+
+        document.body.addEventListener("click", onBodyClick);
+
+        return () => {
+            document.body.removeEventListener("click", onBodyClick);
+        };
+    }, []);
 
     return (
-        <div onBlur={onSearchLosesFocus}>
-            <form
-                onSubmit={event => event.preventDefault()}
-                className="search-form"
-            >
-                <div className="search-bar-wrapper">
-                    <span className="search-bar-span">
-                        <input
-                            className="search-bar"
-                            placeholder={`Search${Symbol.ellips}`}
-                            type="text"
-                            value={query}
-                            onChange={onValueChange}
-                            onFocus={() => setShowResults(true)}
-                        />
-                    </span>
-
-                    <RawLink query={query} />
-                    <CloseButton
-                        query={query}
-                        onBlur={() => setShowResults(false)}
+        <form
+            id="search_form"
+            onSubmit={event => event.preventDefault()}
+            className="search-form"
+            onClick={e => e.preventDefault()}
+        >
+            <div className="search-bar-wrapper">
+                <span className="search-bar-span">
+                    <input
+                        className="search-bar"
+                        placeholder={`Search${Symbol.ellips}`}
+                        type="text"
+                        value={query}
+                        onChange={onValueChange}
+                        onFocus={() => setShowResults(true)}
                     />
-                </div>
+                </span>
 
-                <SearchResults
-                    results={results}
-                    onToggleFeatured={toggleFeatured}
-                    visible={showResults}
-                />
-            </form>
-        </div>
+                <RawLink query={query} />
+            </div>
+
+            <SearchResults
+                results={results}
+                onToggleFeatured={toggleFeatured}
+                visible={showResults}
+            />
+        </form>
     );
 }
 
@@ -142,8 +148,9 @@ function SearchResults(props) {
                 });
 
                 return items.map(item => {
-                    const toggleFeatured = () =>
+                    const toggleFeatured = event =>
                         props.onToggleFeatured(
+                            event,
                             item.type,
                             item.id,
                             item.featured

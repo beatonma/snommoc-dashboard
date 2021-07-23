@@ -28,10 +28,17 @@ export function ListItem(props) {
             <NoContent />
         );
 
+    const onClick =
+        props.onClick ||
+        (e => {
+            e.stopPropagation();
+            console.log("default onClick");
+        });
+
     return (
         <div
             className={extendedClassname("list-item", props)}
-            onClick={props.onClick}
+            onClick={onClick}
         >
             {content}
             {props.children}
