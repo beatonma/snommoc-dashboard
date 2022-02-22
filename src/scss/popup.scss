@@ -1,11 +1,11 @@
-@use 'color';
+@use "color";
 
 .overlay {
     position: fixed;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    z-index: 10000;
+    z-index: 1000;
     background-color: color.$overlay;
     width: 100vw;
     height: 100vh;
@@ -15,6 +15,7 @@
 }
 
 .popup {
+    z-index: 10000;
     margin: 32px auto;
     padding: 16px;
     background-color: color.$surface;

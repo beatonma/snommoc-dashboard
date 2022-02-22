@@ -7,7 +7,7 @@ export function Popup(props) {
         <div className="overlay" onClick={props.onClose}>
             <div
                 className={extendedClassname("popup", props)}
-                onClick={props.onClick}
+                onClick={e => e.stopPropagation()}
             >
                 {props.children}
             </div>

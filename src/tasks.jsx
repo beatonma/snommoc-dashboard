@@ -3,7 +3,7 @@ import { ConfirmButton } from "./components/button";
 import { DateTime } from "./components/datetime";
 import NoContent from "./components/empty";
 import { ListItem, ScrollableColumn } from "./components/list";
-import { Popup } from "./components/popus";
+import { Popup } from "./components/popup";
 import { Tag } from "./components/tag";
 import Section from "./components/section";
 import { Icon, MaterialIcon } from "./components/symbol";
